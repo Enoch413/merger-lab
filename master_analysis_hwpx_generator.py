@@ -16,10 +16,10 @@ GPT/Code Interpreter용 지문 분석 문서 자동 생성기 (HWPX 템플릿 �
 - 업로드된 템플릿 자동 탐지
 - 원본 템플릿 '내용 교체' 방식 유지
 - 배경지식 셀 구조가 조금 달라도 더 잘 채워지도록 보강
-- 최종 문서에는 00~04를 패치하고, 템플릿의 06 표는 그대로 유지
+- 최종 문서에는 00~04와 06 영작 표를 패치한다.
 - 표 행 증감 후 rowCnt / cellAddr / table 높이 자동 정합화
 - 주제문_번호에 맞춰 지문 표의 해당 문장 셀 하이라이트 자동 이동
-- 템플릿의 추가 표(예: 06 대의 파악 영작)는 복제만 하고 내용은 유지
+- 06 대의 파악 영작 표는 소재 행을 제거하고 02 대의 파악 내용을 반영한다.
 """
 
 import copy
@@ -36,7 +36,8 @@ from lxml import etree
 
 HP_NS = "http://www.hancom.co.kr/hwpml/2011/paragraph"
 HS_NS = "http://www.hancom.co.kr/hwpml/2011/section"
-NS = {"hp": HP_NS, "hs": HS_NS}
+HH_NS = "http://www.hancom.co.kr/hwpml/2011/head"
+NS = {"hp": HP_NS, "hs": HS_NS, "hh": HH_NS}
 
 PASSAGE_REQUIRED_KEYS = [
     "번호",
@@ -434,6 +435,43 @@ def patch_analysis(tbl, c):
             replace_cell_multitext(cells[1], lines)
 
 
+def _row_is_blank(row):
+    return not any(cell_text(cell) for cell in child_cells(row))
+
+
+def patch_writing_analysis(tbl, c):
+    rows = child_rows(tbl)
+    if not rows:
+        return
+
+    first_cells = child_cells(rows[0])
+    first_label = cell_text(first_cells[0]) if first_cells else ""
+    if "소재" in first_label:
+        rows_to_remove = [rows[0]]
+        if len(rows) > 1 and _row_is_blank(rows[1]):
+            rows_to_remove.append(rows[1])
+        for row in rows_to_remove:
+            tbl.remove(row)
+
+    prompt_values = [
+        c.get("주제", ""),
+        c.get("요지", ""),
+        c.get("제목", ""),
+        c.get("한_문장_요약", ""),
+    ]
+
+    prompt_rows = []
+    for row in child_rows(tbl):
+        cells = child_cells(row)
+        if len(cells) < 2 or _row_is_blank(row):
+            continue
+        prompt_rows.append(row)
+
+    for row, value in zip(prompt_rows, prompt_values):
+        cells = child_cells(row)
+        replace_cell_text(cells[1], value)
+
+
 def cell_text(cell):
     return "".join((t.text or "") for t in cell.findall(f".//{hp('t')}")).strip()
 
@@ -803,6 +841,8 @@ def patch_all(tables, content):
         patch_sentences(tables[4], content)
     if len(tables) > 5:
         patch_vocab(tables[5], content)
+    if len(tables) > 6:
+        patch_writing_analysis(tables[6], content)
 
 
 
@@ -1013,6 +1053,26 @@ def normalize_all_tables(root):
         normalize_table_structure(tbl)
 
 
+def unlock_document_editing(section_root, header_root=None):
+    for elem in section_root.iter():
+        if "editable" in elem.attrib:
+            elem.set("editable", "1")
+        if "protect" in elem.attrib:
+            elem.set("protect", "0")
+        if "lock" in elem.attrib:
+            elem.set("lock", "0")
+
+    if header_root is None:
+        return
+
+    # Some templates carry change-tracking metadata that can make the output
+    # feel protected/read-only in Hancom Office. Remove it for generated files.
+    for track_config in header_root.findall(".//hh:trackchageConfig", NS):
+        parent = track_config.getparent()
+        if parent is not None:
+            parent.remove(track_config)
+
+
 
 def count_tables_in_elements(elements):
     count = 0
@@ -1045,12 +1105,15 @@ def main():
     with zipfile.ZipFile(template_path, "r") as zf:
         zf.extractall(work_xml_dir)
 
+    header_xml = work_xml_dir / "Contents" / "header.xml"
     section_xml = work_xml_dir / "Contents" / "section0.xml"
     if not section_xml.exists():
         raise FileNotFoundError("HWPX 템플릿 안에 Contents/section0.xml 이 없습니다.")
 
     tree = etree.parse(str(section_xml))
     root = tree.getroot()
+    header_tree = etree.parse(str(header_xml)) if header_xml.exists() else None
+    header_root = header_tree.getroot() if header_tree is not None else None
 
     top_children = list(root)
     # 템플릿 블록 전체를 복제한다. 새 템플릿의 06 대의 파악 영작 표는
@@ -1076,7 +1139,10 @@ def main():
         patch_all(block_tables, content)
 
     normalize_all_tables(root)
+    unlock_document_editing(root, header_root)
     tree.write(str(section_xml), xml_declaration=True, encoding="UTF-8", standalone=True)
+    if header_tree is not None:
+        header_tree.write(str(header_xml), xml_declaration=True, encoding="UTF-8", standalone=True)
 
     output_path = get_output_path(passages, workdir)
     # HWPX 규격: mimetype은 반드시 STORED(비압축)로 첫 번째에 저장해야 함
