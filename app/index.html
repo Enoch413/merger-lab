@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERGER LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lexend:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pl-bg: #f4efe6;
+    --pl-bg-deep: #ebe4d8;
+    --pl-surface: rgba(255, 253, 248, 0.9);
+    --pl-surface-strong: rgba(255, 255, 255, 0.96);
+    --pl-surface-soft: rgba(248, 243, 234, 0.88);
+    --pl-line: rgba(128, 113, 94, 0.22);
+    --pl-line-strong: rgba(23, 79, 89, 0.2);
+    --pl-ink: #1d2c2f;
+    --pl-muted: #726c61;
+    --pl-accent: #174f59;
+    --pl-accent-2: #2e7b69;
+    --pl-accent-3: #d9bb8b;
+    --pl-danger: #a94c3e;
+    --pl-shadow: 0 28px 80px rgba(34, 41, 38, 0.12);
+    --pl-shadow-soft: 0 18px 42px rgba(34, 41, 38, 0.09);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    font-family: "Plus Jakarta Sans", "Noto Sans KR", "Segoe UI", "Malgun Gothic", sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(46, 123, 105, 0.14), transparent 32%),
+      radial-gradient(circle at top right, rgba(217, 187, 139, 0.22), transparent 28%),
+      linear-gradient(180deg, #f7f2ea 0%, #f0e8dc 52%, #ece4d7 100%);
+    color: var(--pl-ink);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+    opacity: 0.28;
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: auto auto 8% -8%;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0));
+    filter: blur(12px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  code,
+  pre {
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  }
+
+  #header {
+    width: min(1520px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 26px 0 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .header-kicker {
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--pl-accent-2);
+  }
+
+  #header h1 {
+    margin: 0;
+    font-family: "Bebas Neue", "Lexend", sans-serif;
+    font-size: clamp(3.1rem, 5vw, 4.8rem);
+    line-height: 0.92;
+    letter-spacing: 0.06em;
+    color: var(--pl-accent);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(23, 79, 89, 0.14);
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 10px 26px rgba(23, 79, 89, 0.08);
+    color: var(--pl-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: blur(12px);
+  }
+
+  #layout {
+    width: min(1520px, calc(100% - 40px));
+    margin: 0 auto 28px;
+    display: grid;
+    grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+
+  #left,
+  #right {
+    border: 1px solid var(--pl-line);
+    box-shadow: var(--pl-shadow);
+    backdrop-filter: blur(18px);
+    position: relative;
+  }
+
+  #left {
+    width: auto;
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    padding: 22px;
+    border-radius: 30px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(249, 244, 236, 0.94)),
+      radial-gradient(circle at top, rgba(46, 123, 105, 0.1), transparent 34%);
+    border-color: rgba(73, 88, 81, 0.13);
+    position: sticky;
+    top: 16px;
+  }
+
+  #left::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  #left::-webkit-scrollbar-thumb {
+    background: rgba(23, 79, 89, 0.18);
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+  }
+
+  #right {
+    min-height: calc(100vh - 48px);
+    padding: 26px;
+    border-radius: 34px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(252, 249, 244, 0.98)),
+      radial-gradient(circle at top right, rgba(46, 123, 105, 0.08), transparent 30%);
+    border-color: rgba(73, 88, 81, 0.12);
+    overflow: hidden;
+  }
+
+  #right::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.54);
+    pointer-events: none;
+  }
+
+  .left-card,
+  .sheet,
+  #success-box,
+  #error-box {
+    background: var(--pl-surface);
+    border: 1px solid var(--pl-line);
+    border-radius: 24px;
+    box-shadow: var(--pl-shadow-soft);
+  }
+
+  .left-card,
+  .sheet {
+    padding: 18px;
+  }
+
+  .left-card + .left-card {
+    margin-top: 14px;
+  }
+
+  .input-label,
+  .sheet-kicker {
+    display: block;
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pl-accent);
+  }
+
+  .input-label span,
+  .hint,
+  .status,
+  .sheet-sub,
+  .file-meta {
+    color: var(--pl-muted);
+  }
+
+  .hint {
+    margin-top: 10px;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  #left input[type="file"],
+  #left input[type="number"] {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid rgba(24, 71, 72, 0.1);
+    border-radius: 16px;
+    background: #faf8f4;
+    color: #203638;
+    outline: none;
+    box-shadow: none;
+  }
+
+  #left input[type="file"] {
+    margin-top: 10px;
+    color: #6f7975;
+  }
+
+  #left input[type="file"]::file-selector-button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(24, 71, 72, 0.08);
+    color: #31565b;
+    cursor: pointer;
+    box-shadow: none;
+  }
+
+  #left input:focus {
+    border-color: rgba(24, 71, 72, 0.22);
+    box-shadow: 0 0 0 4px rgba(24, 71, 72, 0.06);
+  }
+
+  .drop-zone {
+    margin-top: 12px;
+    padding: 18px;
+    border: 1.5px dashed rgba(24, 71, 72, 0.2);
+    border-radius: 20px;
+    background: rgba(250, 248, 244, 0.74);
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .drop-zone.dragover {
+    transform: translateY(-1px);
+    border-color: rgba(31, 107, 97, 0.46);
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .drop-title {
+    font-weight: 800;
+    color: #203638;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 12px;
+  }
+
+  .summary-card {
+    min-width: 0;
+    padding: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(24, 71, 72, 0.08);
+    background: #faf8f4;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #85908c;
+  }
+
+  .summary-value {
+    margin-top: 4px;
+    font-size: 1.6rem;
+    line-height: 1;
+    font-weight: 800;
+    color: #163f42;
+  }
+
+  .left-action-stack {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .inline-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  button {
+    border: 0;
+    border-radius: 20px;
+    padding: 14px 16px;
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease;
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+  }
+
+  .btn-primary {
+    background: #1f6b61;
+    color: #ffffff;
+  }
+
+  .btn-secondary {
+    background: #ffffff;
+    border: 1px solid rgba(24, 71, 72, 0.1);
+    color: #31565b;
+  }
+
+  .btn-danger {
+    background: #fff5f1;
+    border: 1px solid rgba(169, 76, 62, 0.16);
+    color: var(--pl-danger);
+  }
+
+  .btn-mini {
+    padding: 8px 10px;
+    border-radius: 13px;
+    font-size: 12px;
+  }
+
+  .status {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .status.ok {
+    color: #1f6b61;
+  }
+
+  .status.warn {
+    color: var(--pl-danger);
+  }
+
+  #file-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .file-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    padding: 13px;
+    border-radius: 18px;
+    border: 1px solid rgba(24, 71, 72, 0.08);
+    background: #ffffff;
+  }
+
+  .file-order {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: rgba(31, 107, 97, 0.1);
+    color: #1f6b61;
+    font-weight: 800;
+  }
+
+  .file-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    line-height: 1.45;
+    word-break: break-all;
+  }
+
+  .file-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .file-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  #empty,
+  #loading,
+  #result-area {
+    position: relative;
+    z-index: 1;
+  }
+
+  #empty {
+    display: grid;
+    place-items: center;
+    min-height: calc(100vh - 100px);
+    text-align: center;
+  }
+
+  .empty-kicker {
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--pl-accent-2);
+  }
+
+  #loading {
+    display: none;
+    padding: 22px;
+    border-radius: 24px;
+    background: var(--pl-surface);
+    color: var(--pl-muted);
+  }
+
+  #result-area {
+    display: none;
+  }
+
+  body.has-items #empty {
+    display: none;
+  }
+
+  body.has-items #result-area {
+    display: block;
+  }
+
+  .sheet {
+    margin-bottom: 16px;
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .sheet-title {
+    margin-top: 5px;
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 1.55rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: #163f42;
+  }
+
+  .sheet-sub {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  #view-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .preview-box {
+    max-height: calc(100vh - 265px);
+    min-height: 420px;
+    padding: 18px;
+    overflow: auto;
+    border-radius: 22px;
+    border: 1px solid rgba(24, 71, 72, 0.1);
+    background: #16272a;
+    color: #e8f4ee;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 1100px) {
+    #layout {
+      grid-template-columns: 1fr;
+    }
+
+    #left {
+      max-height: none;
+      position: relative;
+      top: auto;
+    }
+
+    #right {
+      min-height: auto;
+    }
+
+    #empty {
+      min-height: 360px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    #header,
+    #layout {
+      width: min(100%, calc(100% - 24px));
+    }
+
+    #header {
+      padding-top: 20px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #header h1 {
+      font-size: 3.2rem;
+    }
+
+    #left,
+    #right {
+      padding: 16px;
+      border-radius: 28px;
+    }
+
+    .summary-grid,
+    .inline-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .sheet-head {
+      display: block;
+    }
+
+    #view-tabs {
+      justify-content: flex-start;
+      margin-top: 12px;
+    }
+  }
+
+  /* Match PINPOINT LAB's final app header and initial output pane. */
+  #header {
+    width: min(560px, calc(100% - 36px));
+    margin: 8px auto 18px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    background: rgba(246, 242, 234, 0.88);
+    border: 1px solid rgba(24, 71, 72, 0.08);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 10px 24px rgba(30, 42, 39, 0.07);
+    backdrop-filter: blur(12px);
+  }
+
+  .header-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  #header h1 {
+    margin: 0;
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 2.23rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #163f42;
+    text-shadow: none;
+    text-transform: none;
+  }
+
+  .badge {
+    order: -1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(24, 71, 72, 0.08);
+    background: #ffffff;
+    box-shadow: 0 8px 18px rgba(30, 42, 39, 0.06);
+    color: #163f42;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: none;
+  }
+
+  #right {
+    flex: 1;
+    min-height: auto;
+    padding: 22px 26px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  #right::before {
+    content: none;
+    display: none;
+  }
+
+  #empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    min-height: 360px;
+    text-align: center;
+    gap: 0;
+    color: #9a8a7a;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .empty-kicker {
+    font-family: "Lexend", "Plus Jakarta Sans", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: #5a4a3a;
+  }
+
+  @media (max-width: 980px) {
+    #header {
+      width: min(100%, calc(100% - 24px));
+      margin: 8px auto 14px;
+    }
+
+    #left {
+      padding: 14px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #header {
+      padding: 12px 14px;
+      border-radius: 0 0 16px 16px;
+      gap: 12px;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    #header h1 {
+      font-size: 1.7rem;
+    }
+
+    .badge {
+      min-width: 42px;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      font-size: 9px;
+    }
+
+    #right {
+      padding: 22px 26px;
+      border-radius: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="header-copy">
+    <h1>MERGER LAB</h1>
+  </div>
+  <div class="badge">WORKSPACE</div>
+</div>
+
+<div id="layout">
+  <div id="left">
+    <div class="left-card">
+      <label class="input-label" for="file-input">분석 JSON 업로드</label>
+      <input type="file" id="file-input" accept=".json,application/json" multiple>
+      <div id="drop-zone" class="drop-zone" role="button" tabindex="0">
+        <div class="drop-title">JSON 파일 추가</div>
+      </div>
+    </div>
+
+    <div class="left-card">
+      <label class="input-label" for="start-number">시작 번호</label>
+      <input id="start-number" type="number" min="1" step="1" value="1">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">파일</div>
+          <div class="summary-value" id="file-count">0</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">지문</div>
+          <div class="summary-value" id="passage-count">0</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">다음</div>
+          <div class="summary-value" id="next-number">1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-card">
+      <label class="input-label">작업 실행</label>
+      <div class="left-action-stack">
+        <button id="bundle-btn" class="btn-primary" type="button" disabled>ZIP 다운로드</button>
+        <div class="inline-actions">
+          <button id="clear-btn" class="btn-secondary" type="button">전체 비우기</button>
+        </div>
+      </div>
+      <div id="status-box" class="status">대기 중</div>
+    </div>
+
+    <div class="left-card">
+      <label class="input-label">업로드 순서</label>
+      <div id="file-list"></div>
+    </div>
+  </div>
+
+  <div id="right">
+    <div id="empty">
+      <div class="empty-kicker">READY TO BUILD</div>
+    </div>
+
+    <div id="loading">ZIP 생성 중</div>
+
+    <div id="result-area">
+      <div class="sheet">
+        <div class="sheet-head">
+          <div>
+            <div class="sheet-kicker">MERGED PREVIEW</div>
+            <div class="sheet-title">통합 미리보기</div>
+          </div>
+          <div id="view-tabs">
+            <button id="preview-full-btn" class="btn-primary" type="button">전체 통합본</button>
+          </div>
+        </div>
+        <div class="preview-box">
+          <pre id="preview-text">{
+  "PASSAGES": []
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const state = {
+    items: []
+  };
+
+  const fileInput = document.getElementById("file-input");
+  const dropZone = document.getElementById("drop-zone");
+  const startNumberInput = document.getElementById("start-number");
+  const clearBtn = document.getElementById("clear-btn");
+  const bundleBtn = document.getElementById("bundle-btn");
+  const fileList = document.getElementById("file-list");
+  const fileCount = document.getElementById("file-count");
+  const passageCount = document.getElementById("passage-count");
+  const nextNumber = document.getElementById("next-number");
+  const statusBox = document.getElementById("status-box");
+  const previewText = document.getElementById("preview-text");
+  const previewFullBtn = document.getElementById("preview-full-btn");
+
+  const deepClone = (value) => JSON.parse(JSON.stringify(value));
+
+  const formatPassageRange = (start, count) => {
+    if (count <= 0) return "-";
+    if (count === 1) return String(start);
+    return start + " ~ " + (start + count - 1);
+  };
+
+  const getStartNumber = () => {
+    const parsed = Number.parseInt(startNumberInput.value, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) return 1;
+    return parsed;
+  };
+
+  const extractPassages = (payload, fileName) => {
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      throw new Error(fileName + ": JSON 최상위는 객체여야 합니다.");
+    }
+    if (!Array.isArray(payload.PASSAGES)) {
+      throw new Error(fileName + ": PASSAGES 배열이 없습니다.");
+    }
+    if (payload.PASSAGES.length === 0) {
+      throw new Error(fileName + ": PASSAGES 배열이 비어 있습니다.");
+    }
+
+    payload.PASSAGES.forEach((passage, index) => {
+      if (!passage || typeof passage !== "object" || Array.isArray(passage)) {
+        throw new Error(fileName + ": PASSAGES[" + index + "]가 객체가 아닙니다.");
+      }
+      if (!("출제포인트" in passage) || !passage.출제포인트 || typeof passage.출제포인트 !== "object" || Array.isArray(passage.출제포인트)) {
+        throw new Error(fileName + ": PASSAGES[" + index + "]에 출제포인트 객체가 없습니다.");
+      }
+    });
+
+    return payload.PASSAGES;
+  };
+
+  const buildMergedPayload = () => {
+    const startNumber = getStartNumber();
+    let currentNumber = startNumber;
+    const merged = { PASSAGES: [] };
+
+    state.items.forEach((item) => {
+      item.passages.forEach((passage) => {
+        const nextPassage = deepClone(passage);
+        nextPassage.번호 = String(currentNumber);
+        merged.PASSAGES.push(nextPassage);
+        currentNumber += 1;
+      });
+    });
+
+    return merged;
+  };
+
+  const updateStatus = (message, type = "") => {
+    statusBox.textContent = message;
+    statusBox.className = "status" + (type ? " " + type : "");
+  };
+
+  const updateSummary = () => {
+    const totalFiles = state.items.length;
+    const totalPassages = state.items.reduce((sum, item) => sum + item.passages.length, 0);
+
+    fileCount.textContent = String(totalFiles);
+    passageCount.textContent = String(totalPassages);
+    nextNumber.textContent = String(getStartNumber() + totalPassages);
+  };
+
+  const renderList = () => {
+    fileList.innerHTML = "";
+
+    if (!state.items.length) {
+      const empty = document.createElement("div");
+      empty.className = "hint";
+      empty.textContent = "파일 없음";
+      fileList.appendChild(empty);
+      return;
+    }
+
+    let runningNumber = getStartNumber();
+
+    state.items.forEach((item, index) => {
+      const card = document.createElement("div");
+      card.className = "file-card";
+
+      const order = document.createElement("div");
+      order.className = "file-order";
+      order.textContent = String(index + 1);
+
+      const body = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "file-name";
+      name.textContent = item.fileName;
+
+      const meta = document.createElement("div");
+      meta.className = "file-meta";
+      meta.textContent = "passage " + item.passages.length + "개 | 새 번호 " + formatPassageRange(runningNumber, item.passages.length);
+
+      runningNumber += item.passages.length;
+      body.append(name, meta);
+
+      const actions = document.createElement("div");
+      actions.className = "file-actions";
+
+      const upBtn = document.createElement("button");
+      upBtn.className = "btn-secondary btn-mini";
+      upBtn.type = "button";
+      upBtn.textContent = "위로";
+      upBtn.disabled = index === 0;
+      upBtn.addEventListener("click", () => moveItem(index, -1));
+
+      const downBtn = document.createElement("button");
+      downBtn.className = "btn-secondary btn-mini";
+      downBtn.type = "button";
+      downBtn.textContent = "아래로";
+      downBtn.disabled = index === state.items.length - 1;
+      downBtn.addEventListener("click", () => moveItem(index, 1));
+
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "btn-danger btn-mini";
+      removeBtn.type = "button";
+      removeBtn.textContent = "삭제";
+      removeBtn.addEventListener("click", () => removeItem(index));
+
+      actions.append(upBtn, downBtn, removeBtn);
+      body.append(actions);
+      card.append(order, body);
+      fileList.appendChild(card);
+    });
+  };
+
+  const updatePreview = () => {
+    const merged = buildMergedPayload();
+    const hasItems = merged.PASSAGES.length > 0;
+
+    document.body.classList.toggle("has-items", hasItems);
+    bundleBtn.disabled = !hasItems;
+    previewText.textContent = JSON.stringify(merged, null, 2);
+    previewFullBtn.className = "btn-primary";
+
+    if (!hasItems) {
+      updateStatus("대기 중");
+      return;
+    }
+
+    updateStatus("통합 완료: " + merged.PASSAGES.length + "개", "ok");
+  };
+
+  const refresh = () => {
+    updateSummary();
+    renderList();
+    updatePreview();
+  };
+
+  const moveItem = (index, offset) => {
+    const targetIndex = index + offset;
+    if (targetIndex < 0 || targetIndex >= state.items.length) return;
+    const [moved] = state.items.splice(index, 1);
+    state.items.splice(targetIndex, 0, moved);
+    refresh();
+  };
+
+  const removeItem = (index) => {
+    state.items.splice(index, 1);
+    refresh();
+  };
+
+  const addFiles = async (files) => {
+    const incoming = Array.from(files || []);
+    if (!incoming.length) return;
+
+    for (const file of incoming) {
+      try {
+        const raw = await file.text();
+        const payload = JSON.parse(raw);
+        const passages = extractPassages(payload, file.name).map((passage) => deepClone(passage));
+        state.items.push({
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+          fileName: file.name,
+          passages
+        });
+      } catch (error) {
+        updateStatus(error.message || (file.name + ": JSON을 읽는 중 오류가 발생했습니다."), "warn");
+      }
+    }
+
+    fileInput.value = "";
+    refresh();
+  };
+
+  const downloadBlob = (blob, fileName) => {
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const parseDownloadName = (contentDisposition) => {
+    if (!contentDisposition) return "MASTER_ANALYSIS_bundle.zip";
+    const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch && utfMatch[1]) {
+      return decodeURIComponent(utfMatch[1]);
+    }
+    const plainMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+    if (plainMatch && plainMatch[1]) {
+      return plainMatch[1];
+    }
+    return "MASTER_ANALYSIS_bundle.zip";
+  };
+
+  const downloadBundle = async () => {
+    if (!state.items.length) return;
+
+    if (window.location.protocol === "file:") {
+      updateStatus("서버 모드 필요", "warn");
+      return;
+    }
+
+    const originalLabel = bundleBtn.textContent;
+    bundleBtn.disabled = true;
+    bundleBtn.textContent = "ZIP 생성 중...";
+
+    try {
+      const response = await fetch("/api/build-bundle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mergedPayload: buildMergedPayload()
+        })
+      });
+
+      if (!response.ok) {
+        let message = "ZIP 생성에 실패했습니다.";
+        try {
+          const payload = await response.json();
+          if (payload && payload.error) {
+            message = payload.error;
+          }
+        } catch (error) {
+          // Keep the default message if the response is not JSON.
+        }
+        throw new Error(message);
+      }
+
+      const blob = await response.blob();
+      const fileName = parseDownloadName(response.headers.get("Content-Disposition"));
+      downloadBlob(blob, fileName);
+      updateStatus("통합본과 HWPX가 생성되었습니다.", "ok");
+    } catch (error) {
+      updateStatus(error.message || "ZIP 생성 중 오류가 발생했습니다.", "warn");
+    } finally {
+      bundleBtn.textContent = originalLabel;
+      bundleBtn.disabled = !state.items.length;
+    }
+  };
+
+  fileInput.addEventListener("change", (event) => addFiles(event.target.files));
+  startNumberInput.addEventListener("input", refresh);
+  clearBtn.addEventListener("click", () => {
+    state.items = [];
+    refresh();
+  });
+  bundleBtn.addEventListener("click", downloadBundle);
+  previewFullBtn.addEventListener("click", () => {
+    updatePreview();
+  });
+
+  dropZone.addEventListener("click", () => fileInput.click());
+  dropZone.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      fileInput.click();
+    }
+  });
+
+  ["dragenter", "dragover"].forEach((type) => {
+    dropZone.addEventListener(type, (event) => {
+      event.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((type) => {
+    dropZone.addEventListener(type, (event) => {
+      event.preventDefault();
+      dropZone.classList.remove("dragover");
+    });
+  });
+
+  dropZone.addEventListener("drop", (event) => {
+    const files = event.dataTransfer ? event.dataTransfer.files : null;
+    addFiles(files);
+  });
+
+  if (window.location.protocol === "file:") {
+    updateStatus("서버 모드 필요", "warn");
+  }
+
+  refresh();
+})();
+</script>
+</body>
+</html>

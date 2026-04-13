@@ -20,10 +20,13 @@ GPT/Code Interpreter용 지문 분석 문서 자동 생성기 (HWPX 템플릿 �
 - 표 행 증감 후 rowCnt / cellAddr / table 높이 자동 정합화
 - 주제문_번호에 맞춰 지문 표의 해당 문장 셀 하이라이트 자동 이동
 - 06 대의 파악 영작 표는 소재 행을 제거하고 02 대의 파악 내용을 반영한다.
+- 03 영어문장 행은 템플릿의 기존 높이를 최소화한 뒤 텍스트를 넣어 자동 확장되게 한다.
+- 페이지는 00~02 / 03 / 04~05 묶음으로 고정한다.
 """
 
 import copy
 import json
+import math
 import os
 import re
 import shutil
@@ -62,6 +65,12 @@ SCALAR_STRING_KEYS = [
     "한_문장_요약",
     "주제문_번호",
 ]
+
+AUTO_FIT_SENTENCE_ROW_HEIGHT = "1"
+WRITING_ANALYSIS_BASE_ROW_HEIGHT = 2280
+WRITING_ANALYSIS_BASE_CELL_WIDTH = 40660
+WRITING_ANALYSIS_UNITS_PER_LINE = 100
+SENTENCE_PAGE_BREAK_SECTION_NUMBERS = {"03", "04"}
 
 LEADING_MARKER_RE = re.compile(r"^([^A-Za-z0-9가-힣\[\(]+\s*)")
 
@@ -284,6 +293,15 @@ def replace_cell_text(cell, text):
         sub.remove(p)
 
 
+def replace_cell_text_with_trailing_blank_line(cell, text):
+    paras = ensure_cell_paras(cell, 2)
+    ensure_para_with_text(paras[0], text)
+    ensure_para_with_text(paras[1], "")
+    sub = get_sublist(cell)
+    for p in cell_paras(cell)[2:]:
+        sub.remove(p)
+
+
 
 def replace_cell_multitext(cell, lines):
     if not lines:
@@ -383,8 +401,6 @@ def bg_slot_indices_for_row(row):
 
 
 def patch_background(tbl, c):
-    import math
-
     terms = c.get("배경_지식", [])
     rows = child_rows(tbl)
     if not rows:
@@ -439,6 +455,62 @@ def _row_is_blank(row):
     return not any(cell_text(cell) for cell in child_cells(row))
 
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _weighted_wrap_units(text):
+    units = 0.0
+    for ch in str(text or ""):
+        if ch == "\t":
+            units += 4
+        elif ch.isspace():
+            units += 0.5
+        elif ord(ch) > 127:
+            units += 2
+        else:
+            units += 1
+    return units
+
+
+def estimate_writing_analysis_row_height(cell, text):
+    _, _, cell_sz, _ = ensure_cell_meta(cell)
+    base_height = max(1, _safe_int(cell_sz.get("height"), WRITING_ANALYSIS_BASE_ROW_HEIGHT))
+    width = max(1, _safe_int(cell_sz.get("width"), WRITING_ANALYSIS_BASE_CELL_WIDTH))
+    capacity = max(1.0, WRITING_ANALYSIS_UNITS_PER_LINE * (width / WRITING_ANALYSIS_BASE_CELL_WIDTH))
+    line_count = 0
+    for line in str(text or "").splitlines() or [""]:
+        line_count += max(1, math.ceil(_weighted_wrap_units(line) / capacity))
+    return max(base_height, base_height * line_count)
+
+
+def set_cell_height(cell, height):
+    _, _, cell_sz, _ = ensure_cell_meta(cell)
+    cell_sz.set("height", str(max(1, int(height))))
+
+
+def sync_writing_answer_row_height(prompt_row, answer_row, text):
+    cells = child_cells(prompt_row)
+    if len(cells) < 2:
+        return
+
+    prompt_height = estimate_writing_analysis_row_height(cells[1], text)
+    set_cell_height(cells[1], prompt_height)
+
+    if answer_row is not None:
+        for answer_cell in child_cells(answer_row):
+            set_cell_height(answer_cell, prompt_height)
+
+    for cell in cells:
+        _, cell_span, _, _ = ensure_cell_meta(cell)
+        row_span = max(1, _safe_int(cell_span.get("rowSpan"), 1))
+        if row_span > 1:
+            set_cell_height(cell, prompt_height * row_span)
+
+
 def patch_writing_analysis(tbl, c):
     rows = child_rows(tbl)
     if not rows:
@@ -460,20 +532,48 @@ def patch_writing_analysis(tbl, c):
         c.get("한_문장_요약", ""),
     ]
 
-    prompt_rows = []
-    for row in child_rows(tbl):
+    all_rows = child_rows(tbl)
+    prompt_pairs = []
+    for idx, row in enumerate(all_rows):
         cells = child_cells(row)
         if len(cells) < 2 or _row_is_blank(row):
             continue
-        prompt_rows.append(row)
+        answer_row = all_rows[idx + 1] if idx + 1 < len(all_rows) and _row_is_blank(all_rows[idx + 1]) else None
+        prompt_pairs.append((row, answer_row))
 
-    for row, value in zip(prompt_rows, prompt_values):
+    for (row, answer_row), value in zip(prompt_pairs, prompt_values):
         cells = child_cells(row)
         replace_cell_text(cells[1], value)
+        sync_writing_answer_row_height(row, answer_row, value)
 
 
 def cell_text(cell):
     return "".join((t.text or "") for t in cell.findall(f".//{hp('t')}")).strip()
+
+
+def element_text(elem):
+    return "".join((t.text or "") for t in elem.findall(f".//{hp('t')}")).strip()
+
+
+def _section_number_from_heading(text):
+    normalized = re.sub(r"\s+", "", str(text or ""))
+    match = re.match(r"^(0\d)[·.)-]", normalized)
+    return match.group(1) if match else ""
+
+
+def enforce_fixed_page_layout(block, is_first_block):
+    for elem in block:
+        if etree.QName(elem).localname == "p":
+            elem.set("pageBreak", "0")
+
+    if not is_first_block and block and etree.QName(block[0]).localname == "p":
+        block[0].set("pageBreak", "1")
+
+    for elem in block:
+        if etree.QName(elem).localname != "p" or elem.findall(".//hp:tbl", NS):
+            continue
+        if _section_number_from_heading(element_text(elem)) in SENTENCE_PAGE_BREAK_SECTION_NUMBERS:
+            elem.set("pageBreak", "1")
 
 
 SENTENCE_NO_RE = re.compile(r"^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮\d]+$")
@@ -727,6 +827,12 @@ def apply_topic_sentence_highlight(
             _set_cell_run_charpr(cells[number_idx], default_number_charpr)
 
 
+def minimize_sentence_row_height_for_auto_fit(row):
+    for cell in child_cells(row):
+        _, _, cell_sz, _ = ensure_cell_meta(cell)
+        cell_sz.set("height", AUTO_FIT_SENTENCE_ROW_HEIGHT)
+        get_sublist(cell).set("textHeight", "0")
+
 
 def patch_sentences(tbl, c):
     sents = c.get("지문", [])
@@ -758,6 +864,8 @@ def patch_sentences(tbl, c):
 
     target_rows = child_rows(tbl)[1:] if has_header else child_rows(tbl)
     for row, sent in zip(target_rows, sents):
+        # 기존 샘플 행의 큰 높이를 물려받지 않도록 텍스트를 넣기 전에 최소화한다.
+        minimize_sentence_row_height_for_auto_fit(row)
         cells = child_cells(row)
         if not cells:
             continue
@@ -769,9 +877,9 @@ def patch_sentences(tbl, c):
         if number_idx < len(cells):
             replace_cell_text(cells[number_idx], sent.get("번호", ""))
         if english_idx < len(cells):
-            replace_cell_text(cells[english_idx], sent.get("영어", ""))
+            replace_cell_text_with_trailing_blank_line(cells[english_idx], sent.get("영어", ""))
         if korean_idx < len(cells):
-            replace_cell_text(cells[korean_idx], sent.get("한국어", ""))
+            replace_cell_text_with_trailing_blank_line(cells[korean_idx], sent.get("한국어", ""))
 
         for clear_idx in col_map.get("clear_indices", []):
             if clear_idx < len(cells):
@@ -981,10 +1089,12 @@ def max_row_height(row):
     for cell in child_cells(row):
         cell_sz = cell.find(f"./{hp('cellSz')}")
         if cell_sz is not None:
-            try:
-                heights.append(int(cell_sz.get("height", "0")))
-            except ValueError:
-                pass
+            height = _safe_int(cell_sz.get("height"), 0)
+            cell_span = cell.find(f"./{hp('cellSpan')}")
+            row_span = max(1, _safe_int(cell_span.get("rowSpan"), 1) if cell_span is not None else 1)
+            if row_span > 1:
+                height = max(1, (height + row_span - 1) // row_span)
+            heights.append(height)
     return max(heights) if heights else 0
 
 
@@ -1128,10 +1238,7 @@ def main():
 
     for idx, content in enumerate(passages):
         block = [copy.deepcopy(e) for e in template_block]
-        if idx > 0 and block:
-            # 첫 문단 앞 페이지 나눔
-            if etree.QName(block[0]).localname == 'p':
-                block[0].set('pageBreak', '1')
+        enforce_fixed_page_layout(block, is_first_block=(idx == 0))
         for elem in block:
             root.append(elem)
 
