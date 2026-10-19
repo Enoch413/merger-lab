@@ -1,29 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-GPT/Code Interpreter용 지문 분석 문서 자동 생성기 (HWPX 템플릿 전용)
+"""MASTER_ANALYSIS JSON으로 00~04 HWPX 분석 문서를 생성한다."""
 
-사용 방법
-1) 같은 작업 폴더에 아래 파일을 둔다.
-   - input.json
-   - 템플릿 hwpx 파일 1개
-2) 이 스크립트를 실행한다.
-3) 템플릿의 기존 표/셀 내용을 교체한 최종 hwpx가 생성된다.
-
-개선 사항
-- PASSAGES 하드코딩 제거
-- 고정 경로 제거
-- 업로드된 템플릿 자동 탐지
-- 원본 템플릿 '내용 교체' 방식 유지
-- 배경지식 셀 구조가 조금 달라도 더 잘 채워지도록 보강
-- 최종 문서에는 00~04와 06 영작 표를 패치한다.
-- 표 행 증감 후 rowCnt / cellAddr / table 높이 자동 정합화
-- 주제문_번호에 맞춰 지문 표의 해당 문장 셀 하이라이트 자동 이동
-- 06 대의 파악 영작 표는 소재 행을 제거하고 02 대의 파악 내용을 반영한다.
-- 03 영어문장 행은 템플릿의 기존 높이를 최소화한 뒤 텍스트를 넣어 자동 확장되게 한다.
-- 페이지는 00~02 / 03 / 04~05 묶음으로 고정한다.
-"""
-
+import argparse
 import copy
 import json
 import math
@@ -67,95 +46,9 @@ SCALAR_STRING_KEYS = [
 ]
 
 AUTO_FIT_SENTENCE_ROW_HEIGHT = "1"
-WRITING_ANALYSIS_BASE_ROW_HEIGHT = 2280
-WRITING_ANALYSIS_BASE_CELL_WIDTH = 40660
-WRITING_ANALYSIS_UNITS_PER_LINE = 100
 SENTENCE_PAGE_BREAK_SECTION_NUMBERS = {"03", "04"}
 
 LEADING_MARKER_RE = re.compile(r"^([^A-Za-z0-9가-힣\[\(]+\s*)")
-
-SECTION_HEADER_LABELS = [
-    "전체 내용",
-    "배경 지식",
-    "대의 파악",
-    "지문 분석",
-    "동의어/반의어",
-    "동의어 / 반의어",
-    "출제 완전 분석",
-]
-
-SECTION_HEADER_RE = re.compile(
-    r"""(?ix)
-    (?:
-        ^|(?<=\s)
-    )
-    (?:
-        (?:[-*_]\s*){3,}\s*
-    )?
-    (?:
-        \#+\s*
-    )?
-    \\?
-    0?\d{1,2}
-    \s*[.)]?\s*
-    (?:
-        """ + "|".join(re.escape(label) for label in SECTION_HEADER_LABELS) + r"""
-    )
-    \b
-    """
-)
-
-def _strip_trailing_section_markers(text):
-    if text is None:
-        return ""
-    text = str(text).strip()
-    if not text:
-        return text
-
-    matches = list(SECTION_HEADER_RE.finditer(text))
-    if matches:
-        cut = matches[0].start()
-        candidate = text[:cut].rstrip(" \t\r\n-")
-        if candidate:
-            text = candidate
-
-    return text
-
-def sanitize_input(data):
-    for passage in data.get("PASSAGES", []):
-        for key in SCALAR_STRING_KEYS:
-            if key in passage:
-                passage[key] = _strip_trailing_section_markers(passage[key])
-
-        if isinstance(passage.get("소재"), list):
-            passage["소재"] = [_strip_trailing_section_markers(item) for item in passage["소재"]]
-
-        if isinstance(passage.get("배경_지식"), list):
-            for item in passage["배경_지식"]:
-                if isinstance(item, dict):
-                    if "제목" in item:
-                        item["제목"] = _strip_trailing_section_markers(item["제목"])
-                    if "내용" in item:
-                        item["내용"] = _strip_trailing_section_markers(item["내용"])
-
-        if isinstance(passage.get("지문"), list):
-            for item in passage["지문"]:
-                if isinstance(item, dict):
-                    if "영어" in item:
-                        item["영어"] = _strip_trailing_section_markers(item["영어"])
-                    if "한국어" in item:
-                        item["한국어"] = _strip_trailing_section_markers(item["한국어"])
-
-        if isinstance(passage.get("어휘"), list):
-            for item in passage["어휘"]:
-                if isinstance(item, dict):
-                    for key in ["단어", "뜻", "동의어", "반의어", "반의어_뜻"]:
-                        if key in item:
-                            item[key] = _strip_trailing_section_markers(item[key])
-
-    return data
-
-
 
 def _looks_like_analysis_header_row(row):
     cells = child_cells(row)
@@ -295,15 +188,49 @@ def replace_cell_text(cell, text):
 
 def replace_cell_text_with_trailing_blank_line(cell, text):
     paras = ensure_cell_paras(cell, 2)
-    ensure_para_with_text(paras[0], text)
-    ensure_para_with_text(paras[1], "")
+    text_template, blank_template = paras[0], paras[1]
     sub = get_sublist(cell)
-    for p in cell_paras(cell)[2:]:
+    for p in cell_paras(cell):
         sub.remove(p)
+    for line in str(text).split("\n"):
+        sub.append(make_para_like(text_template, line))
+    sub.append(make_para_like(blank_template, ""))
 
 
 
-def replace_cell_multitext(cell, lines):
+ENGLISH_PARENTHESIS_RE = re.compile(r"\([^()가-힣]*[A-Za-z][^()가-힣]*\)")
+
+
+def _style_parenthesized_english(para, text, english_charpr):
+    """Keep the template's blue English runs inside Korean analysis text."""
+    if not english_charpr or not re.search(r"[가-힣]", text):
+        return
+    pieces = ENGLISH_PARENTHESIS_RE.split(text)
+    accents = ENGLISH_PARENTHESIS_RE.findall(text)
+    if not accents:
+        return
+
+    base_run = para_runs(para)[0]
+    base_style = base_run.get("charPrIDRef")
+    for run in para_runs(para):
+        para.remove(run)
+    for index, piece in enumerate(pieces):
+        for segment, charpr in ((piece, base_style),
+                                (accents[index], english_charpr) if index < len(accents) else ("", base_style)):
+            if not segment:
+                continue
+            run = copy.deepcopy(base_run)
+            if charpr:
+                run.set("charPrIDRef", charpr)
+            for child in list(run):
+                run.remove(child)
+            span = etree.SubElement(run, hp("t"))
+            span.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
+            span.text = segment
+            para.append(run)
+
+
+def replace_cell_multitext(cell, lines, english_charpr=None):
     if not lines:
         replace_cell_text(cell, "")
         return
@@ -323,6 +250,7 @@ def replace_cell_multitext(cell, lines):
     for i, line in enumerate(lines):
         template_para = templates[i] if i < len(templates) else templates[-1]
         new_para = make_para_like(template_para, line)
+        _style_parenthesized_english(new_para, line, english_charpr)
         if i == 0:
             new_para.set("pageBreak", "0")
         sub.append(new_para)
@@ -435,6 +363,24 @@ def patch_background(tbl, c):
 def patch_analysis(tbl, c):
     rows, has_header = _table_data_rows(tbl, _looks_like_analysis_header_row)
     start_idx = 1 if has_header else 0
+    english_charpr = None
+    for row in rows[start_idx + 1:]:
+        cells = child_cells(row)
+        if len(cells) < 2:
+            continue
+        for para in cell_paras(cells[1]):
+            runs = para_runs(para)
+            default_style = runs[0].get("charPrIDRef") if runs else None
+            for run in runs[1:]:
+                text = "".join(t.text or "" for t in run.findall(f"./{hp('t')}"))
+                style = run.get("charPrIDRef")
+                if style != default_style and ENGLISH_PARENTHESIS_RE.fullmatch(text):
+                    english_charpr = style
+                    break
+            if english_charpr:
+                break
+        if english_charpr:
+            break
     row_map = [
         (start_idx + 0, c.get("소재", [])),
         (start_idx + 1, [c.get("주제", "")]),
@@ -448,11 +394,7 @@ def patch_analysis(tbl, c):
             continue
         cells = child_cells(all_rows[ri])
         if len(cells) >= 2:
-            replace_cell_multitext(cells[1], lines)
-
-
-def _row_is_blank(row):
-    return not any(cell_text(cell) for cell in child_cells(row))
+            replace_cell_multitext(cells[1], lines, english_charpr if ri > start_idx else None)
 
 
 def _safe_int(value, default=0):
@@ -460,91 +402,6 @@ def _safe_int(value, default=0):
         return int(value)
     except (TypeError, ValueError):
         return default
-
-
-def _weighted_wrap_units(text):
-    units = 0.0
-    for ch in str(text or ""):
-        if ch == "\t":
-            units += 4
-        elif ch.isspace():
-            units += 0.5
-        elif ord(ch) > 127:
-            units += 2
-        else:
-            units += 1
-    return units
-
-
-def estimate_writing_analysis_row_height(cell, text):
-    _, _, cell_sz, _ = ensure_cell_meta(cell)
-    base_height = max(1, _safe_int(cell_sz.get("height"), WRITING_ANALYSIS_BASE_ROW_HEIGHT))
-    width = max(1, _safe_int(cell_sz.get("width"), WRITING_ANALYSIS_BASE_CELL_WIDTH))
-    capacity = max(1.0, WRITING_ANALYSIS_UNITS_PER_LINE * (width / WRITING_ANALYSIS_BASE_CELL_WIDTH))
-    line_count = 0
-    for line in str(text or "").splitlines() or [""]:
-        line_count += max(1, math.ceil(_weighted_wrap_units(line) / capacity))
-    return max(base_height, base_height * line_count)
-
-
-def set_cell_height(cell, height):
-    _, _, cell_sz, _ = ensure_cell_meta(cell)
-    cell_sz.set("height", str(max(1, int(height))))
-
-
-def sync_writing_answer_row_height(prompt_row, answer_row, text):
-    cells = child_cells(prompt_row)
-    if len(cells) < 2:
-        return
-
-    prompt_height = estimate_writing_analysis_row_height(cells[1], text)
-    set_cell_height(cells[1], prompt_height)
-
-    if answer_row is not None:
-        for answer_cell in child_cells(answer_row):
-            set_cell_height(answer_cell, prompt_height)
-
-    for cell in cells:
-        _, cell_span, _, _ = ensure_cell_meta(cell)
-        row_span = max(1, _safe_int(cell_span.get("rowSpan"), 1))
-        if row_span > 1:
-            set_cell_height(cell, prompt_height * row_span)
-
-
-def patch_writing_analysis(tbl, c):
-    rows = child_rows(tbl)
-    if not rows:
-        return
-
-    first_cells = child_cells(rows[0])
-    first_label = cell_text(first_cells[0]) if first_cells else ""
-    if "소재" in first_label:
-        rows_to_remove = [rows[0]]
-        if len(rows) > 1 and _row_is_blank(rows[1]):
-            rows_to_remove.append(rows[1])
-        for row in rows_to_remove:
-            tbl.remove(row)
-
-    prompt_values = [
-        c.get("주제", ""),
-        c.get("요지", ""),
-        c.get("제목", ""),
-        c.get("한_문장_요약", ""),
-    ]
-
-    all_rows = child_rows(tbl)
-    prompt_pairs = []
-    for idx, row in enumerate(all_rows):
-        cells = child_cells(row)
-        if len(cells) < 2 or _row_is_blank(row):
-            continue
-        answer_row = all_rows[idx + 1] if idx + 1 < len(all_rows) and _row_is_blank(all_rows[idx + 1]) else None
-        prompt_pairs.append((row, answer_row))
-
-    for (row, answer_row), value in zip(prompt_pairs, prompt_values):
-        cells = child_cells(row)
-        replace_cell_text(cells[1], value)
-        sync_writing_answer_row_height(row, answer_row, value)
 
 
 def cell_text(cell):
@@ -834,13 +691,64 @@ def minimize_sentence_row_height_for_auto_fit(row):
         get_sublist(cell).set("textHeight", "0")
 
 
-def patch_sentences(tbl, c):
+def replace_pronunciation_content(cell, sentence):
+    """Fill the original wide-cell pronunciation layout, if present."""
+    templates = cell_paras(cell)
+    if len(templates) < 3:
+        raise ValueError("발음 템플릿의 문장 칸에 영어·발음·해석 서식이 필요합니다.")
+    sub = get_sublist(cell)
+    for paragraph in templates:
+        sub.remove(paragraph)
+    for template, key in zip(templates[:3], ("영어", "한글발음", "한국어")):
+        # Explicit newlines get their own paragraphs; no slash or spacing is changed.
+        for line in sentence[key].split("\n"):
+            sub.append(make_para_like(template, line))
+
+
+def replace_pronunciation_in_english_cell(english_cell, korean_cell, sentence):
+    """Keep the user's English / purple pronunciation / blank paragraph design."""
+    templates = cell_paras(english_cell)
+    if len(templates) < 2:
+        raise ValueError("발음 템플릿 영어 칸에 영어·발음 문단이 필요합니다.")
+    sub = get_sublist(english_cell)
+    for paragraph in templates:
+        sub.remove(paragraph)
+    for template, key in ((templates[0], "영어"), (templates[1], "한글발음")):
+        for line in sentence[key].split("\n"):
+            sub.append(make_para_like(template, line))
+    if len(templates) >= 3:
+        sub.append(make_para_like(templates[2], ""))
+
+    korean_template = cell_paras(korean_cell)
+    if not korean_template:
+        raise ValueError("발음 템플릿 직독직해 칸에 문단 서식이 필요합니다.")
+    korean_sub = get_sublist(korean_cell)
+    for paragraph in korean_template:
+        korean_sub.remove(paragraph)
+    for line in sentence["한국어"].split("\n"):
+        korean_sub.append(make_para_like(korean_template[0], line))
+    if len(korean_template) >= 2:
+        korean_sub.append(make_para_like(korean_template[1], ""))
+
+
+def patch_sentences(tbl, c, pronunciation=False):
     sents = c.get("지문", [])
     rows = child_rows(tbl)
     if not rows or not sents:
         return
 
-    col_map = detect_sentence_table_columns(tbl)
+    if pronunciation:
+        sample_cell_count = len(child_cells(rows[0]))
+        if sample_cell_count not in (3, 5):
+            raise ValueError("발음용 03 지문 분석 표는 3셀 또는 5셀 문장 행이어야 합니다.")
+        col_map = {
+            "has_header": False, "number_idx": 0, "english_idx": 2,
+            "korean_idx": 4 if sample_cell_count == 5 else 2,
+            "clear_indices": [1, 3] if sample_cell_count == 5 else [],
+            "highlight_indices": [0, 2, 4] if sample_cell_count == 5 else [0, 2],
+        }
+    else:
+        col_map = detect_sentence_table_columns(tbl)
     has_header = col_map.get("has_header", False)
     dr = rows[1:] if has_header else rows
     if not dr:
@@ -876,9 +784,16 @@ def patch_sentences(tbl, c):
 
         if number_idx < len(cells):
             replace_cell_text(cells[number_idx], sent.get("번호", ""))
-        if english_idx < len(cells):
+        if pronunciation:
+            if len(cells) == 5:
+                replace_pronunciation_in_english_cell(cells[2], cells[4], sent)
+            elif len(cells) == 3 and cells[2].find(f"./{hp('cellSpan')}").get("colSpan") == "3":
+                replace_pronunciation_content(cells[2], sent)
+            else:
+                raise ValueError("선택한 HWPX는 발음용 03 템플릿이 아닙니다.")
+        elif english_idx < len(cells):
             replace_cell_text_with_trailing_blank_line(cells[english_idx], sent.get("영어", ""))
-        if korean_idx < len(cells):
+        if not pronunciation and korean_idx < len(cells):
             replace_cell_text_with_trailing_blank_line(cells[korean_idx], sent.get("한국어", ""))
 
         for clear_idx in col_map.get("clear_indices", []):
@@ -936,7 +851,7 @@ def patch_vocab(tbl, c):
             replace_cell_text(cells[4], word.get("반의어_뜻", ""))
 
 
-def patch_all(tables, content):
+def patch_all(tables, content, pronunciation=False):
     if len(tables) > 0:
         patch_header(tables[0], content)
     if len(tables) > 1:
@@ -946,11 +861,9 @@ def patch_all(tables, content):
     if len(tables) > 3:
         patch_analysis(tables[3], content)
     if len(tables) > 4:
-        patch_sentences(tables[4], content)
+        patch_sentences(tables[4], content, pronunciation=pronunciation)
     if len(tables) > 5:
         patch_vocab(tables[5], content)
-    if len(tables) > 6:
-        patch_writing_analysis(tables[6], content)
 
 
 
@@ -985,15 +898,25 @@ def _validate_background_list(obj, key, field_name):
         _validate_string_field(item, "내용", f"{field_name}[{idx}].내용")
 
 
-def _validate_sentence_list(obj, key, field_name):
+def _validate_sentence_list(obj, key, field_name, pronunciation=False, passage_number=""):
     if key not in obj:
         raise KeyError(f"{field_name} 키가 없습니다.")
     _require_type(obj[key], list, field_name)
+    if not obj[key]:
+        raise ValueError(f"지문 {passage_number}: 문장 배열이 비어 있습니다.")
     for idx, item in enumerate(obj[key]):
         _require_type(item, dict, f"{field_name}[{idx}]")
         _validate_string_field(item, "번호", f"{field_name}[{idx}].번호")
         _validate_string_field(item, "영어", f"{field_name}[{idx}].영어")
         _validate_string_field(item, "한국어", f"{field_name}[{idx}].한국어")
+        if pronunciation:
+            location = f"지문 {passage_number} · 문장 {item['번호']}"
+            if "한글발음" not in item:
+                raise ValueError(f"{location}: 한글발음이 누락되었습니다.")
+            if not isinstance(item["한글발음"], str):
+                raise ValueError(f"{location}: 한글발음은 문자열이어야 합니다.")
+            if not item["한글발음"].strip():
+                raise ValueError(f"{location}: 한글발음이 비어 있습니다.")
 
 
 def _validate_vocab_list(obj, key, field_name):
@@ -1009,7 +932,7 @@ def _validate_vocab_list(obj, key, field_name):
         _validate_string_field(item, "반의어_뜻", f"{field_name}[{idx}].반의어_뜻")
 
 
-def validate_input(data):
+def validate_input(data, pronunciation=False):
     if "PASSAGES" not in data:
         raise KeyError('최상위 키 "PASSAGES"가 없습니다.')
     _require_type(data["PASSAGES"], list, "PASSAGES")
@@ -1029,22 +952,8 @@ def validate_input(data):
 
         _validate_background_list(passage, "배경_지식", f"{field_name}.배경_지식")
         _validate_list_of_strings(passage, "소재", f"{field_name}.소재")
-        _validate_sentence_list(passage, "지문", f"{field_name}.지문")
+        _validate_sentence_list(passage, "지문", f"{field_name}.지문", pronunciation, passage["번호"])
         _validate_vocab_list(passage, "어휘", f"{field_name}.어휘")
-
-
-def find_template_docx(workdir: Path) -> Path:
-    candidates = [p for p in workdir.glob("*.hwpx") if not p.name.startswith("~$")]
-    candidates = [p for p in candidates if "분석결과_" not in p.name]
-    if not candidates:
-        raise FileNotFoundError("작업 폴더에 템플릿 .hwpx 파일이 없습니다.")
-    if len(candidates) == 1:
-        return candidates[0]
-
-    preferred = [p for p in candidates if "템플릿" in p.name or "template" in p.name.lower()]
-    if preferred:
-        return preferred[0]
-    return candidates[0]
 
 
 def get_output_path(passages, workdir: Path) -> Path:
@@ -1105,8 +1014,7 @@ def normalize_table_structure(tbl):
     total_height = 0
     max_cols = 0
 
-    # 이전 행에서 내려오는 rowSpan 점유 정보를 유지해야
-    # 병합 셀이 있는 표(예: 06 대의 파악 영작)의 cellAddr가 깨지지 않는다.
+    # 병합 셀이 있는 표의 cellAddr를 정규화할 때 rowSpan 점유 정보를 유지한다.
     occupied_until = {}
 
     for row_idx, row in enumerate(rows):
@@ -1193,6 +1101,15 @@ def count_tables_in_elements(elements):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pronunciation", choices=("included", "excluded"), default="excluded")
+    parser.add_argument("--template", help="작업 폴더에 있는 HWPX 템플릿 파일명")
+    args = parser.parse_args()
+    expected_name = ("analysis_template_pronunciation.hwpx" if args.pronunciation == "included"
+                     else "analysis_template.hwpx")
+    template_name = args.template or expected_name
+    if Path(template_name).name != expected_name:
+        raise ValueError("선택한 발음 옵션과 HWPX 템플릿이 일치하지 않습니다.")
     workdir = Path.cwd()
     input_json = workdir / "input.json"
 
@@ -1202,10 +1119,11 @@ def main():
     with input_json.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
-    data = sanitize_input(data)
-    validate_input(data)
+    validate_input(data, pronunciation=args.pronunciation == "included")
     passages = data["PASSAGES"]
-    template_path = find_template_docx(workdir)
+    template_path = workdir / template_name
+    if not template_path.is_file():
+        raise FileNotFoundError(f"HWPX 템플릿을 찾지 못했습니다: {template_path}")
 
     work_xml_dir = workdir / "_hwpx_build_tmp"
     if work_xml_dir.exists():
@@ -1226,12 +1144,11 @@ def main():
     header_root = header_tree.getroot() if header_tree is not None else None
 
     top_children = list(root)
-    # 템플릿 블록 전체를 복제한다. 새 템플릿의 06 대의 파악 영작 표는
-    # 패치 대상이 아니므로 내용은 건드리지 않고 블록에 그대로 포함만 시킨다.
+    # 00~04 블록만 복제한다. 마지막 영작 페이지는 두 템플릿 모두 없다.
     template_block = [copy.deepcopy(e) for e in top_children]
     tables_per_block = count_tables_in_elements(template_block)
-    if tables_per_block < 6:
-        raise ValueError(f"템플릿 표 개수가 부족합니다. expected>=6, actual={tables_per_block}")
+    if tables_per_block != 6:
+        raise ValueError(f"00~04 템플릿 표는 6개여야 합니다. actual={tables_per_block}")
 
     for elem in list(root):
         root.remove(elem)
@@ -1243,7 +1160,7 @@ def main():
             root.append(elem)
 
         block_tables = root.findall('.//hp:tbl', NS)[idx * tables_per_block:(idx + 1) * tables_per_block]
-        patch_all(block_tables, content)
+        patch_all(block_tables, content, pronunciation=args.pronunciation == "included")
 
     normalize_all_tables(root)
     unlock_document_editing(root, header_root)

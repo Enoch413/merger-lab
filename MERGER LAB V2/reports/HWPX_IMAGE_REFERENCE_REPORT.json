@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-15",
+  "status": "PASS",
+  "placeholder_in_outputs": false,
+  "outputs": [
+    {"file": "T01_microwave_excluded.hwpx", "ok": true, "logic_refs": ["logic_001"], "sha256": "97d84b53633e3c758ae64106767046ad60086d6c5e5c0e40006552371509c199"},
+    {"file": "T02_microwave_included.hwpx", "ok": true, "logic_refs": ["logic_001"], "sha256": "d8ae61732035a409c5ca3002849f4780ee4f119ef59317afbe06ba4c4064337b"},
+    {"file": "T03_grief_excluded.hwpx", "ok": true, "logic_refs": ["logic_001"], "sha256": "3e98a5cf32a166ae7dc62ce11f2fe14d9b61de37034a8e951e375ef3a133c5e4"},
+    {"file": "T04_grief_included.hwpx", "ok": true, "logic_refs": ["logic_001"], "sha256": "dfe92d3bb764b8b093849a5c86bd42b5ddd0b682213e4ef3bcfc874c588ce7bc"},
+    {"file": "T05_microwave_grief_excluded.hwpx", "ok": true, "logic_refs": ["logic_001", "logic_002"], "sha256": "d7deae31653a3a33edf290d1f1c1594cb1c24b80b031e9d02d42446c923b7ee5"},
+    {"file": "T06_microwave_grief_included.hwpx", "ok": true, "logic_refs": ["logic_001", "logic_002"], "sha256": "97ae71b6afd8575579b2c4d629177a2403eac264b8744e547e02840f03494e0a"},
+    {"file": "T07_grief_microwave_excluded.hwpx", "ok": true, "logic_refs": ["logic_001", "logic_002"], "sha256": "408be5de998bf91e476a11d8b3ac7f6036d98ecbcf1844b898c13a5dcd7fb38e"},
+    {"file": "T08_grief_microwave_included.hwpx", "ok": true, "logic_refs": ["logic_001", "logic_002"], "sha256": "05005dd0e0c330484ca865fdef63852e47592c8632b7006a2c7f1e8744967d8b"},
+    {"file": "T09_legacy_compatibility.hwpx", "ok": true, "logic_refs": [], "sha256": "63990672c18047be56de68971f9643cb44368a04a5743e8149090bb7917aada9"},
+    {"file": "T13_school_range_included.hwpx", "ok": true, "logic_refs": ["logic_001", "logic_002"], "sha256": "0361f95ba8ee405c4d970a4d47286b50c703b66ffb7341ceaac4845125612f02"}
+  ]
+}
+

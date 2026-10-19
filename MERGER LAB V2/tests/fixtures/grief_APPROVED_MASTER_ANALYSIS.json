@@ -1,0 +1,542 @@
+{
+  "PASSAGES": [
+    {
+      "번호": "1",
+      "전체_내용": "이 글은 심리학 이론들이 한목소리로 중요하다고 보는 애도, 곧 상실을 애도하는 일이 슬픔을 느끼는 데 그치지 않고 삶을 이어 가는 데도 도움이 된다는 점을 다룬다. 의식에 꼭 필요한 역동적인 감정 과정인 애도는 자신과 타인의 취약함과 죽음을 마주하게 하고, 큰 상실 뒤 삶의 활력을 회복하도록 돕는다. 상실과 슬픔을 존중하면서 자신이 변화하고 계속 살아갈 바탕을 마련하는 애도는 사랑과 연민에 바탕을 둔 지속적인 실천으로 설명된다. 잃은 것을 애도하면 남아 있는 것에 대한 사랑과 헌신이 강해질 길이 열리고, 시간이 지나면서 손상을 복구하거나 보상하려는 마음이 생길 수도 있다. 이를 통해 애도는 우리를 매우 슬프게 하면서 동시에 행동하려는 의욕도 강하게 만들 수 있음을 보여 준다.",
+      "배경_지식": [],
+      "소재": [
+        "grief(애도)",
+        "loss and the continuation of life(상실과 삶의 지속)"
+      ],
+      "요지": "애도(grieving, mourning)는 상실의 슬픔(sadness of loss, sorrow over loss)을 존중하며 삶의 회복(recovery, restoration of life energy)을 돕고, 남아 있는 것에 대한 사랑과 헌신이 강화될 길을 열며 행동(action, restorative efforts)으로 이어질 수도 있다.",
+      "주제": "상실의 슬픔(sadness of loss, sorrow over loss)을 존중하는 애도(grieving, mourning)의 삶의 회복(recovery, restoration of life energy)과 행동 동기(action motivation, motivation to act) 지원 기능",
+      "제목": "애도(grieving, mourning) 속 슬픔(sadness, sorrow)과 다시 살아갈 힘(renewed life energy, restored vitality)",
+      "한_문장_요약": "애도(grieving, mourning)는 상실의 슬픔(sadness of loss, sorrow over loss)을 존중하고 삶의 회복(recovery, restoration of life energy)을 도우며, 남아 있는 것에 대한 사랑과 헌신이 강화될 길을 열고 행동(action, restorative efforts)의 동기를 줄 수도 있다.",
+      "주제문_번호": "(8)",
+      "지문": [
+        {
+          "번호": "1",
+          "영어": "Psychological theories across the field / agree on the importance of grieving our losses, / from the highly personal through to the broadly collective.",
+          "한글발음": "사이컬라지컬 씨어리즈 어크로스 더 필드 / 어그리 온 디 임포턴스 어브 그리빙 아워 로시즈, / 프럼 더 하일리 퍼서널 쓰루 투 더 브로들리 컬렉티브.",
+          "한국어": "심리학 분야 전반의 이론들은 / 우리의 상실을 애도하는 일의 중요성에 동의한다, / 매우 개인적인 상실에서 폭넓은 집단적 상실에 이르기까지."
+        },
+        {
+          "번호": "2",
+          "영어": "Grief is a dynamic emotional process / essential to consciousness.",
+          "한글발음": "그리프 이즈 어 다이내믹 이모셔널 프라세스 / 이센셜 투 칸셔스니스.",
+          "한국어": "애도는 역동적인 감정 과정이다 / 의식에 필수적인."
+        },
+        {
+          "번호": "3",
+          "영어": "At a psychological level, / it supports us / to both face into our own and others’ vulnerability, transience and mortality, / and to repair life energy after significant loss.",
+          "한글발음": "앳 어 사이컬라지컬 레벌, / 잇 서포츠 어스 / 투 보쓰 페이스 인투 아워 오운 앤 어더즈 벌너러빌러티, 트랜지언스 앤 모탤러티, / 앤 투 리페어 라이프 에너지 애프터 시그니피컨트 로스.",
+          "한국어": "심리적 차원에서, / 그것은 우리를 돕는다 / 우리 자신과 타인의 취약함, 덧없음, 죽을 수밖에 없음을 마주하도록 하는 것과, / 큰 상실 뒤 삶의 활력을 회복하도록 하는 것 모두에서."
+        },
+        {
+          "번호": "4",
+          "영어": "Grief work honours the loss, the sadness and the experience of diminishment or absence, / while also setting up the ground / for self-transformation and the continuation of life.",
+          "한글발음": "그리프 워크 아너즈 더 로스, 더 새드니스 앤 디 익스피리언스 어브 디미니시먼트 오어 앱선스, / 와일 올소 세팅 업 더 그라운드 / 포어 셀프 트랜스퍼메이션 앤 더 컨티뉴에이션 어브 라이프.",
+          "한국어": "애도 작업은 상실, 슬픔, 그리고 줄어듦이나 부재의 경험을 존중한다, / 동시에 바탕도 마련하면서 / 자기 변화와 삶의 지속을 위한."
+        },
+        {
+          "번호": "5",
+          "영어": "Psychotherapist Fran Weller describes grief work / as “an act of devotion, rooted in love and compassion” / that requires “an ongoing practice of deepening, attending and listening.”",
+          "한글발음": "사이코쎄러피스트 프랜 웰러 디스크라이브즈 그리프 워크 / 애즈 “앤 액트 어브 디보션, 루티드 인 러브 앤 컴패션” / 댓 리콰이어즈 “앤 온고잉 프랙티스 어브 디프닝, 어텐딩 앤 리스닝.”",
+          "한국어": "심리치료사 프랜 웰러는 애도 작업을 설명한다 / “사랑과 연민에 뿌리를 둔 헌신의 행위”라고 / “깊이 들어가고, 주의를 기울이고, 귀 기울이는 지속적인 실천”을 요구하는."
+        },
+        {
+          "번호": "6",
+          "영어": "When we grieve for what is lost, / it clears the way / towards a strengthening of love and commitment / for what remains.",
+          "한글발음": "웬 위 그리브 포어 왓 이즈 로스트, / 잇 클리어즈 더 웨이 / 터워즈 어 스트렝쓰닝 어브 러브 앤 커밋먼트 / 포어 왓 리메인즈.",
+          "한국어": "우리가 잃은 것을 애도할 때, / 그것은 길을 열어 준다 / 사랑과 헌신이 강화되는 쪽으로 / 남아 있는 것에 대한."
+        },
+        {
+          "번호": "7",
+          "영어": "In time / this may build a desire to make good from the loss / by repairing as many damages as we can / and/or compensating for them.",
+          "한글발음": "인 타임 / 디스 메이 빌드 어 디자이어 투 메이크 굿 프럼 더 로스 / 바이 리페어링 애즈 메니 대미지즈 애즈 위 캔 / 앤드 오어 캄펀세이팅 포어 뎀.",
+          "한국어": "시간이 지나면 / 이것은 상실에서 좋은 것을 만들어 내려는 바람을 키울 수 있다 / 우리가 할 수 있는 한 많은 손상을 복구함으로써 / 그리고 또는 그것들을 보상함으로써."
+        },
+        {
+          "번호": "8",
+          "영어": "Grief can make us / both very sad and very motivated to act.",
+          "한글발음": "그리프 캔 메이크 어스 / 보쓰 베리 새드 앤 베리 모티베이티드 투 액트.",
+          "한국어": "애도는 우리를 만들 수 있다 / 매우 슬프게 하면서 동시에 행동하려는 의욕도 매우 강하게."
+        }
+      ],
+      "어휘": [
+        {
+          "단어": "essential",
+          "뜻": "필수적인",
+          "동의어": "vital, indispensable",
+          "반의어": "unnecessary",
+          "반의어_뜻": "불필요한"
+        },
+        {
+          "단어": "vulnerability",
+          "뜻": "취약함",
+          "동의어": "susceptibility, fragility",
+          "반의어": "invulnerability",
+          "반의어_뜻": "상처받거나 손상될 수 없음"
+        },
+        {
+          "단어": "transience",
+          "뜻": "덧없음, 일시성",
+          "동의어": "impermanence, temporariness",
+          "반의어": "permanence",
+          "반의어_뜻": "영속성"
+        },
+        {
+          "단어": "repair",
+          "뜻": "회복하다",
+          "동의어": "restore, renew",
+          "반의어": "없음",
+          "반의어_뜻": "없음"
+        },
+        {
+          "단어": "honours",
+          "뜻": "존중하다, 소중히 인정하다",
+          "동의어": "respects, acknowledges",
+          "반의어": "disregards, dismisses",
+          "반의어_뜻": "무시하다, 대수롭지 않게 여기다"
+        },
+        {
+          "단어": "continuation",
+          "뜻": "지속",
+          "동의어": "continuance, persistence",
+          "반의어": "cessation",
+          "반의어_뜻": "중단"
+        },
+        {
+          "단어": "ongoing",
+          "뜻": "지속적인",
+          "동의어": "continuing, sustained",
+          "반의어": "intermittent",
+          "반의어_뜻": "간헐적인"
+        },
+        {
+          "단어": "strengthening",
+          "뜻": "강화",
+          "동의어": "reinforcement, intensification",
+          "반의어": "weakening",
+          "반의어_뜻": "약화"
+        },
+        {
+          "단어": "motivated",
+          "뜻": "의욕이 생긴",
+          "동의어": "eager, driven",
+          "반의어": "unwilling, reluctant",
+          "반의어_뜻": "내키지 않는, 꺼리는"
+        }
+      ],
+      "출제포인트": {
+        "핵심 내용 재활용": {
+          "요지": "Grief honours the sadness of loss and supports recovery, opens the way for stronger love and commitment to what remains, and may inspire action.",
+          "주제": "The role of grief in honouring loss, supporting recovery and motivating action",
+          "제목": "Grief: Sorrow and the Strength to Live On",
+          "영어_요약문": "Grief honours the (A) sadness of loss and supports recovery, while also opening the way for stronger love and commitment to what remains and potentially inspiring (B) action.",
+          "A": "sadness",
+          "B": "action",
+          "정답_가능_표현": {
+            "A": [
+              "sorrow",
+              "heartache"
+            ],
+            "B": [
+              "restorative efforts",
+              "practical steps"
+            ]
+          },
+          "풀이_전략": "(3~4)에서 상실과 슬픔을 마주하고 삶의 활력을 회복하는 기능을 찾는다. (6~8)의 사랑·헌신 강화와 복구·보상 욕구를 연결하되, may와 can이 나타내는 행동 가능성을 보존한다."
+        },
+        "어휘 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(4)",
+            "표현": "honours",
+            "왜_벗어나는가": "honours는 상실과 슬픔의 경험을 존중하고 인정한다는 뜻이다. disregards로 바꾸면 이를 무시한다는 뜻이 되어, (3)의 취약함과 죽음을 마주하는 기능 및 (5)의 사랑과 연민에 바탕을 둔 실천과 충돌한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(3)",
+            "표현": "repair",
+            "왜_벗어나는가": "repair는 삶의 활력을 회복한다는 뜻이다. damage로 바꾸면 큰 상실 뒤 활력을 손상한다는 뜻이 되어, (4)의 자기 변화와 삶의 지속을 위한 바탕을 마련한다는 설명과 어긋난다. (7)의 외적 손상 복구와 이 문장의 자기 삶의 활력 회복은 대상을 구별해야 한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(4)",
+            "표현": "continuation",
+            "왜_벗어나는가": "continuation은 상실 뒤에도 삶이 지속됨을 뜻한다. cessation으로 바꾸면 애도가 삶의 중단을 위한 바탕을 만든다는 뜻이 되어, 회복과 자기 변화를 돕는다는 (3~4)의 기능과 어긋난다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "표현": "strengthening",
+            "왜_벗어나는가": "strengthening은 남아 있는 것에 대한 사랑과 헌신의 강화다. weakening으로 바꾸면 애도가 남은 것에 대한 사랑과 헌신을 약화한다는 뜻이 되어, (7)에서 손상을 복구하거나 보상하려는 바람이 생길 수 있다는 흐름과 어긋난다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(8)",
+            "표현": "motivated",
+            "왜_벗어나는가": "motivated는 행동하려는 의욕이 생긴다는 뜻이다. unwilling으로 바꾸면 행동을 꺼리게 된다는 뜻이 되어, (7)의 복구와 보상 욕구를 종합하는 결론에 어긋난다. sad와 motivated는 서로 배제되는 상태가 아니라 both로 함께 제시된다."
+          }
+        ],
+        "빈칸 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(4)",
+            "핵심구절": "setting up the ground for self-transformation and the continuation of life",
+            "출제이유": "상실과 슬픔을 존중하는 애도의 또 다른 기능을 복원하는 자리다. while also는 앞의 슬픔 인정과 병렬로 기능을 더하고, (3)의 삶의 활력 회복과 (6~7)의 남은 것에 대한 사랑·행동 가능성이 근거이므로 삶을 바꾸고 이어 갈 바탕이라는 의미가 필요하다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "핵심구절": "a strengthening of love and commitment for what remains",
+            "출제이유": "잃은 것의 애도와 남아 있는 것 사이에 어떤 관계가 생기는지 판단하는 자리다. (5)의 사랑과 연민에 바탕을 둔 실천, (7)의 복구·보상 욕구를 근거로 남은 것에 대한 사랑과 헌신의 강화를 복원해야 하며, 상실의 부정이나 남은 것에 대한 무관심으로 바꾸면 안 된다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(8)",
+            "핵심구절": "both very sad and very motivated to act",
+            "출제이유": "글 전체를 두 속성으로 종합하는 자리다. (3~4)의 상실·취약함·슬픔과 (6~7)의 사랑·헌신 강화 및 복구·보상 욕구를 함께 읽어 슬픔과 행동 의욕이 공존할 수 있음을 복원한다. 슬픔이 사라져야만 행동할 수 있다는 뜻은 원문에 없다."
+          }
+        ],
+        "문장 삽입 포인트": [
+          {
+            "별점": "★★☆",
+            "문장번호": "(2)",
+            "삽입후보문장": "Grief is a dynamic emotional process essential to consciousness.",
+            "출제이유": "(1)의 상실 애도라는 화제를 Grief의 정의와 중요성으로 구체화한다. 뒤의 (3) it이 Grief를 받아 그 심리적 기능을 설명하므로, 중요성 제시→과정의 정의→기능 설명의 연결을 확인한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(3)",
+            "삽입후보문장": "At a psychological level, it supports us to both face into our own and others’ vulnerability, transience and mortality, and to repair life energy after significant loss.",
+            "출제이유": "it은 (2)의 Grief를 받는다. both와 and는 취약함·덧없음·죽음에 직면하는 일과 삶의 활력 회복을 함께 제시하고, 뒤의 (4)는 상실을 존중하면서 삶을 이어 갈 바탕을 마련한다는 두 기능을 다시 풀어 설명한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(4)",
+            "삽입후보문장": "Grief work honours the loss, the sadness and the experience of diminishment or absence, while also setting up the ground for self-transformation and the continuation of life.",
+            "출제이유": "(3)의 상실 직면과 활력 회복을, 상실·슬픔을 존중하는 일과 자기 변화·삶의 지속의 바탕이라는 두 기능으로 구체화한다. 뒤의 (5)는 반복되는 grief work를 사랑과 연민에 바탕을 둔 실천으로 설명하므로, 기능 설명에서 그 실천의 성격으로 이어지는 관계를 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(5)",
+            "삽입후보문장": "Psychotherapist Fran Weller describes grief work as “an act of devotion, rooted in love and compassion” that requires “an ongoing practice of deepening, attending and listening.”",
+            "출제이유": "grief work가 (4)의 애도 작업을 이어 받고, love and compassion이 뒤의 (6) love and commitment와 연결된다. 기능 설명을 지속적인 헌신의 실천으로 풀어 준 뒤 남은 것에 대한 사랑의 강화로 이어지므로, 인용문도 앞뒤 논리 속에서 읽어야 한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "삽입후보문장": "When we grieve for what is lost, it clears the way towards a strengthening of love and commitment for what remains.",
+            "출제이유": "(5)의 love and compassion을 잃은 것의 애도와 남은 것에 대한 사랑·헌신의 강화로 이어 준다. 뒤의 (7) this는 이 강화의 흐름을 받아 복구·보상 욕구가 생길 수 있음을 말하므로, what is lost/what remains의 대비와 this의 지시 범위를 함께 확인한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "삽입후보문장": "In time this may build a desire to make good from the loss by repairing as many damages as we can and/or compensating for them.",
+            "출제이유": "In time과 this가 (6)의 남은 것에 대한 사랑·헌신 강화 흐름을 받는다. may는 손상을 복구하거나 보상하려는 욕구가 생길 가능성을 나타내고, 뒤의 (8) motivated to act가 이 행동 지향을 종합하므로 사랑의 강화→가능한 복구 욕구→행동 의욕의 연결을 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(8)",
+            "삽입후보문장": "Grief can make us both very sad and very motivated to act.",
+            "출제이유": "both very sad and very motivated to act는 (3~4)의 상실 직면과 슬픔, (6~7)의 사랑·헌신 강화와 복구·보상 욕구를 함께 종합한다. 바로 앞의 행동 지향만이 아니라 앞부분의 슬픔도 회수하며, can은 두 상태가 함께 생길 수 있음을 나타낸다."
+          }
+        ],
+        "글의 순서 포인트": {
+          "BOX": {
+            "문장번호": "(1~2)",
+            "기능": "애도의 중요성과 역동적 감정 과정이라는 정의를 제시한다. 다음 it이 Grief를 받아 심리적 기능을 설명한다."
+          },
+          "A": {
+            "문장번호": "(3~5)",
+            "기능": "상실 직면·활력 회복, 슬픔 존중·삶의 지속을 위한 바탕을 설명하고 애도 작업을 사랑·연민의 지속적 실천으로 규정한다. love가 다음 사랑·헌신 강화로 이어진다."
+          },
+          "B": {
+            "문장번호": "(6)",
+            "기능": "잃은 것을 애도하는 일에서 남은 것에 대한 사랑과 헌신의 강화로 연결한다. what is lost/what remains의 대비와 다음 this의 지시 대상을 확인한다."
+          },
+          "C": {
+            "문장번호": "(7~8)",
+            "기능": "In time this may로 사랑·헌신 강화가 복구·보상 욕구로 이어질 가능성을 제시하고, 슬픔과 행동 의욕의 공존으로 종합한다. may/can의 가능성을 보존한다."
+          },
+          "정답": "A-B-C"
+        },
+        "서술형 포인트": [
+          {
+            "별점": "★★☆",
+            "문장번호": "(2)",
+            "영어원문": "Grief is a dynamic emotional process essential to consciousness.",
+            "문법포인트설명": "애도가 의식에 필수적인 역동적 감정 과정이라는 핵심 정의를 표현한다. 문장 전체 영작을 추천하고 process 뒤의 essential to consciousness가 process를 수식함을 확인한다. essential을 사용하도록 조건을 줄 수 있으며 that is essential처럼 관계절로 풀어도 조건과 의미가 맞으면 허용한다. essential을 단지 선택적인이라는 뜻으로 약화하지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(3)",
+            "영어원문": "At a psychological level, it supports us to both face into our own and others’ vulnerability, transience and mortality, and to repair life energy after significant loss.",
+            "문법포인트설명": "애도가 취약함과 죽음을 마주하는 일과 상실 뒤 활력 회복을 모두 돕는다는 두 기능을 표현한다. 문장 전체의 조건 영작을 추천하며 supports us to와 both를 사용하도록 할 수 있다. our own and others’가 세 명사 vulnerability, transience, mortality에 함께 걸리고 after significant loss는 회복의 시점을 설명한다. 원문의 to both face ... and to repair를 보존하되 조건이 허용하면 to both face ... and repair처럼 평행을 정돈한 문장도 인정하며, 직면이 회복의 필수 원인이라고 새로 묶지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(4)",
+            "영어원문": "Grief work honours the loss, the sadness and the experience of diminishment or absence, while also setting up the ground for self-transformation and the continuation of life.",
+            "문법포인트설명": "애도가 슬픔을 존중하면서 삶의 변화와 지속을 위한 바탕도 마련한다는 병렬 기능을 표현한다. 문장 전체를 honours와 while also를 쓰는 조건 영작 대상으로 추천한다. setting up의 주체는 Grief work이고 for 뒤의 self-transformation과 the continuation of life가 병렬이다. while을 반드시 요구하지 않는 과제에서는 and also로 연결해도 의미가 맞으면 허용하며, 슬픔이 먼저 끝나야 삶이 계속된다는 뜻으로 바꾸지 않는다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(5)",
+            "영어원문": "Psychotherapist Fran Weller describes grief work as “an act of devotion, rooted in love and compassion” that requires “an ongoing practice of deepening, attending and listening.”",
+            "문법포인트설명": "애도 작업의 사랑·연민과 지속적 실천이라는 성격을 표현한다. 문장 전체의 조건 영작을 추천하며 describe A as B와 requires를 사용하도록 할 수 있다. rooted in은 헌신의 행위에 사랑과 연민이라는 바탕을 덧붙이고 that requires는 앞의 act를 수식한다. practice of 뒤의 deepening, attending, listening은 of의 목적어로 병렬된 동명사이며, 생략된 목적어를 임의로 만들어 넣지 않는다. 인용 표현을 직접인용으로 유지할지 간접 표현을 허용할지는 과제 조건으로 정한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "영어원문": "When we grieve for what is lost, it clears the way towards a strengthening of love and commitment for what remains.",
+            "문법포인트설명": "잃은 것을 애도하면 남은 것에 대한 사랑과 헌신이 강해질 길이 열린다는 관계를 표현한다. 문장 전체를 when, what, clears the way를 쓰는 조건 영작 대상으로 추천한다. what is lost와 what remains는 선행사를 포함한 명사절이며 각각 for의 목적어다. it은 앞의 애도하는 일을 받고, 마지막 for what remains는 사랑과 헌신의 대상을 나타낸다. 조건절의 위치가 달라도 의미가 맞으면 허용하며 남은 것의 상실을 애도한다는 뜻으로 뒤집지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "영어원문": "In time this may build a desire to make good from the loss by repairing as many damages as we can and/or compensating for them.",
+            "문법포인트설명": "남은 것에 대한 사랑·헌신 강화가 시간이 지나 복구·보상 욕구로 이어질 수 있음을 표현한다. 문장 전체를 may, by -ing, as many ... as를 쓰는 조건 영작 대상으로 추천한다. as we can 뒤에는 repair가 생략되어 있고 repairing과 compensating은 by에 함께 연결된다. them은 damages를 받으며 and/or는 복구와 보상이 함께 또는 각각 가능함을 남긴다. 의미가 같은 대체 동사를 조건이 허용하면 인정하되 may를 삭제해 실제 행동을 반드시 한다고 단정하지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(8)",
+            "영어원문": "Grief can make us both very sad and very motivated to act.",
+            "문법포인트설명": "애도가 슬픔과 행동 의욕을 동시에 만들 수 있다는 결론을 표현한다. 문장 전체를 make+목적어+목적격보어, both ... and로 쓰는 조건 영작 대상으로 추천한다. sad와 motivated는 us의 상태를 나타내는 병렬 보어이고 to act는 motivated의 행동 내용을 나타낸다. can의 가능성과 두 상태의 공존을 보존하면 조건에 맞는 다른 어순도 허용하며, 슬픔을 극복한 뒤에만 행동한다는 시간 순서를 추가하지 않는다."
+          }
+        ],
+        "함축 의미 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(4)",
+            "핵심표현": "setting up the ground for self-transformation and the continuation of life",
+            "함축의미": "상실과 슬픔을 인정하는 애도가 자신이 변화하고 삶을 계속 이어 갈 수 있는 심리적 바탕을 마련한다는 뜻이다.",
+            "왜_중요한가": "ground는 실제 땅이 아니라 변화와 삶의 지속을 가능하게 하는 바탕을 비유한다. (3)의 활력 회복과 while also의 병렬 기능이 근거이므로, 슬픔을 지워 버리거나 실제 장소를 준비한다는 뜻으로 해석하지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "핵심표현": "clears the way",
+            "함축의미": "잃은 것을 애도하는 일이 남아 있는 것에 대한 사랑과 헌신을 더 깊게 할 수 있도록 길을 열어 준다는 뜻이다.",
+            "왜_중요한가": "실제 길을 치운다는 말이 아니다. towards 뒤의 사랑·헌신 강화와 what remains가 어떤 심리적 가능성이 열리는지 구체화한다. 빈칸에서는 강화될 대상과 방향을 복원하고, 여기서는 길을 연다는 비유의 전달 의미를 구별한다."
+          }
+        ]
+      },
+      "논리_시각화": {
+        "schema_version": "1.0.0",
+        "diagram_type": "CLAIM_EVIDENCE",
+        "selection_reason": "애도의 중요성을 제시한 뒤 상실 직면·활력 회복과 삶의 지속, 사랑·헌신의 실천 및 행동 가능성으로 뒷받침한다. 사랑·헌신 강화에서 복구 욕구로 이어질 수 있는 인과는 해당 연결에만 표시하며, 애도의 여러 기능 전체를 차례로 발생하는 인과 단계로 만들지 않으므로 주장·근거형을 선택한다.",
+        "nodes": [
+          {
+            "id": "N1",
+            "sentence_numbers": [
+              "1",
+              "2"
+            ],
+            "role": "중요성과 정의",
+            "label": "애도는 중요하며 의식에 필수적인 감정 과정",
+            "evidence": [
+              {
+                "sentence_no": "1",
+                "quote": "importance of grieving our losses"
+              },
+              {
+                "sentence_no": "2",
+                "quote": "a dynamic emotional process essential to consciousness"
+              }
+            ]
+          },
+          {
+            "id": "N2",
+            "sentence_numbers": [
+              "3",
+              "4",
+              "5"
+            ],
+            "role": "애도의 기능과 실천",
+            "label": "상실 직면·활력 회복을 돕는 사랑과 연민의 실천",
+            "evidence": [
+              {
+                "sentence_no": "3",
+                "quote": "face into our own and others’ vulnerability, transience and mortality"
+              },
+              {
+                "sentence_no": "4",
+                "quote": "honours the loss, the sadness"
+              },
+              {
+                "sentence_no": "5",
+                "quote": "an act of devotion, rooted in love and compassion"
+              },
+              {
+                "sentence_no": "3",
+                "quote": "to repair life energy after significant loss"
+              },
+              {
+                "sentence_no": "4",
+                "quote": "self-transformation and the continuation of life"
+              },
+              {
+                "sentence_no": "5",
+                "quote": "an ongoing practice of deepening, attending and listening."
+              }
+            ]
+          },
+          {
+            "id": "N3",
+            "sentence_numbers": [
+              "6"
+            ],
+            "role": "남은 것에 대한 애착",
+            "label": "남은 것에 대한 사랑·헌신 강화의 길을 열어 줌",
+            "evidence": [
+              {
+                "sentence_no": "6",
+                "quote": "a strengthening of love and commitment for what remains"
+              },
+              {
+                "sentence_no": "6",
+                "quote": "it clears the way towards a strengthening"
+              }
+            ]
+          },
+          {
+            "id": "N4",
+            "sentence_numbers": [
+              "7"
+            ],
+            "role": "가능한 행동 지향",
+            "label": "시간이 지나 복구·보상 욕구가 생길 수 있음",
+            "evidence": [
+              {
+                "sentence_no": "7",
+                "quote": "this may build a desire to make good from the loss"
+              }
+            ]
+          },
+          {
+            "id": "N5",
+            "sentence_numbers": [
+              "8"
+            ],
+            "role": "두 속성의 종합",
+            "label": "깊은 슬픔과 강한 행동 의욕이 함께 생길 수 있음",
+            "evidence": [
+              {
+                "sentence_no": "8",
+                "quote": "both very sad and very motivated to act"
+              }
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "id": "E1",
+            "from": "N1",
+            "to": "N2",
+            "relation": "EVIDENCE",
+            "label": "중요성을 기능과 실천으로 뒷받침",
+            "evidence": [
+              {
+                "sentence_no": "1",
+                "quote": "importance of grieving our losses"
+              },
+              {
+                "sentence_no": "3",
+                "quote": "to repair life energy after significant loss"
+              },
+              {
+                "sentence_no": "4",
+                "quote": "self-transformation and the continuation of life"
+              }
+            ]
+          },
+          {
+            "id": "E2",
+            "from": "N2",
+            "to": "N3",
+            "relation": "ELABORATION",
+            "label": "남은 것에 대한 사랑 강화도 설명",
+            "evidence": [
+              {
+                "sentence_no": "5",
+                "quote": "rooted in love and compassion"
+              },
+              {
+                "sentence_no": "6",
+                "quote": "a strengthening of love and commitment for what remains"
+              }
+            ]
+          },
+          {
+            "id": "E3",
+            "from": "N3",
+            "to": "N4",
+            "relation": "CAUSE",
+            "label": "시간이 지나 복구 욕구로 이어질 수 있음",
+            "evidence": [
+              {
+                "sentence_no": "6",
+                "quote": "a strengthening of love and commitment for what remains"
+              },
+              {
+                "sentence_no": "7",
+                "quote": "In time this may build a desire"
+              }
+            ]
+          },
+          {
+            "id": "E4",
+            "from": "N2",
+            "to": "N5",
+            "relation": "ELABORATION",
+            "label": "상실의 슬픔을 종합",
+            "evidence": [
+              {
+                "sentence_no": "4",
+                "quote": "the loss, the sadness"
+              },
+              {
+                "sentence_no": "8",
+                "quote": "very sad"
+              }
+            ]
+          },
+          {
+            "id": "E5",
+            "from": "N4",
+            "to": "N5",
+            "relation": "ELABORATION",
+            "label": "복구·보상 욕구를 행동 의욕으로 종합",
+            "evidence": [
+              {
+                "sentence_no": "7",
+                "quote": "repairing as many damages as we can and/or compensating for them"
+              },
+              {
+                "sentence_no": "8",
+                "quote": "very motivated to act"
+              }
+            ]
+          }
+        ],
+        "analogies": [],
+        "rendering": {
+          "layout": "BRANCH",
+          "reading_order": [
+            "N1",
+            "N2",
+            "N3",
+            "N4",
+            "N5"
+          ],
+          "groups": [],
+          "target": "A4_HALF_PAGE",
+          "show_title": false
+        }
+      }
+    }
+  ]
+}

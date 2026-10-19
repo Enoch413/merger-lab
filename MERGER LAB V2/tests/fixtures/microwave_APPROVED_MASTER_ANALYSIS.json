@@ -1,0 +1,540 @@
+{
+  "PASSAGES": [
+    {
+      "번호": "1",
+      "전체_내용": "이 글은 매체나 기술의 눈에 보이는 특징에 집중하면 시간이 지나며 쌓이는 변화를 놓치게 된다는 점을 다룬다. 전자레인지 덕분에 음식을 빨리 준비할 수 있게 되면서, 대체로 여성이었던 가족 내 요리 담당자들은 오랜 조리의 부담에서 벗어났다. 그러나 이런 편리함에 주목하는 동안, 한 사람이 가족이 함께 먹을 저녁을 준비하던 방식이 사라지는 데 따른 장기적인 영향은 쉽게 간과되었다. 시간이 흐르면서 함께 저녁을 먹는 가족이 줄었고, 오래 준비하는 식사는 아마 특별한 때를 빼고는 드물어졌다. 이 사례는 전자레인지가 가족생활에 미친 영향을 당시에는 예상하지 못했고 미리 내다보기도 어려웠을 것임을 보여 준다.",
+      "배경_지식": [],
+      "소재": [
+        "media and technology(매체와 기술)",
+        "long-term changes(장기적인 변화)"
+      ],
+      "주제": "매체와 기술(media and technology, communication media and technological tools)의 뚜렷한 단기 효과(obvious short-term effects, readily noticeable immediate effects)에 가려진 장기 변화(long-term changes, gradual changes over time)의 간과",
+      "요지": "매체와 기술(media and technology, communication media and technological tools)의 뚜렷한 단기 효과(obvious short-term effects, readily noticeable immediate effects)에 집중하면 시간이 지나며 쌓이는 장기 변화(long-term changes, gradual changes over time)를 놓치기 쉽다.",
+      "제목": "매체와 기술(media and technology, communication media and technological tools)의 눈에 보이는 편리함(visible convenience, readily apparent ease) 뒤, 서서히 쌓이는 변화(gradual changes, changes accumulating over time)",
+      "한_문장_요약": "매체와 기술(media and technology, communication media and technological tools)의 뚜렷한 단기 효과(obvious short-term effects, readily noticeable immediate effects)에 집중하면 덜 뚜렷한 장기 변화(subtle long-term changes, less noticeable changes over time)를 놓치기 쉽다.",
+      "주제문_번호": "(1)",
+      "지문": [
+        {
+          "번호": "1",
+          "영어": "When we focus on the obvious aspects of media, / we miss the changes / that accumulate over time / but are not apparent day to day.",
+          "한글발음": "웬 위 포커스 온 디 아비어스 애스펙츠 어브 미디어, / 위 미스 더 체인지즈 / 댓 어큐뮬레이트 오버 타임 / 벗 아 낫 어패런트 데이 투 데이.",
+          "한국어": "우리가 매체의 명백한 측면에 집중할 때, / 우리는 변화들을 놓친다 / 시간이 지나며 쌓이는 / 하지만 하루하루는 뚜렷하게 드러나지 않는."
+        },
+        {
+          "번호": "2",
+          "영어": "Most of us notice the obvious aspects of a new medium or technology / while missing the more subtle aspects.",
+          "한글발음": "모스트 어브 어스 노티스 디 아비어스 애스펙츠 어브 어 뉴 미디엄 오어 테크날러지 / 와일 미싱 더 모어 서틀 애스펙츠.",
+          "한국어": "우리 대부분은 새로운 매체나 기술의 명백한 측면을 알아차린다 / 반면 더 미묘한 측면은 놓친다."
+        },
+        {
+          "번호": "3",
+          "영어": "Take, for example, / the microwave oven.",
+          "한글발음": "테이크, 포어 이그잼플, / 더 마이크로웨이브 어븐.",
+          "한국어": "예를 들어 살펴보자, / 전자레인지를."
+        },
+        {
+          "번호": "4",
+          "영어": "It was introduced in the early 1980s / and revolutionized food preparation.",
+          "한글발음": "잇 워즈 인트러듀스트 인 디 얼리 나인틴 에이티즈 / 앤 레벌루셔나이즈드 푸드 프레퍼레이션.",
+          "한국어": "그것은 1980년대 초에 도입되었다 / 그리고 음식 준비를 혁신적으로 바꾸었다."
+        },
+        {
+          "번호": "5",
+          "영어": "Traditionally, / one person spent the better part of an afternoon / fixing an evening meal for a family.",
+          "한글발음": "트러디셔널리, / 원 퍼슨 스펜트 더 베터 파트 어브 앤 애프터눈 / 픽싱 앤 이브닝 밀 포어 어 패멀리.",
+          "한국어": "전통적으로, / 한 사람이 오후 시간의 대부분을 보냈다 / 가족을 위한 저녁 식사를 준비하는 데."
+        },
+        {
+          "번호": "6",
+          "영어": "Now, / it was possible to prepare foods very quickly, / and this shortening of preparation time was liberating / for the cooks in the family, / most of whom tended to be women.",
+          "한글발음": "나우, / 잇 워즈 파서블 투 프리페어 푸즈 베리 퀵클리, / 앤 디스 쇼트닝 어브 프레퍼레이션 타임 워즈 리버레이팅 / 포어 더 쿡스 인 더 패멀리, / 모스트 어브 훔 텐디드 투 비 위민.",
+          "한국어": "이제, / 음식을 매우 빠르게 준비하는 것이 가능했다, / 그리고 이러한 준비 시간의 단축은 부담에서 벗어나게 해 주었다 / 가족 내 요리 담당자들에게, / 그들 대부분은 여성인 경향이 있었다."
+        },
+        {
+          "번호": "7",
+          "영어": "But the short-term, obvious implications of greater convenience / made it easy to overlook the long-term implications / of no longer having one person fix food / for the family to eat together at an evening meal.",
+          "한글발음": "벗 더 쇼트 텀, 아비어스 임플리케이션즈 어브 그레이터 컨비니언스 / 메이드 잇 이지 투 오버룩 더 롱 텀 임플리케이션즈 / 어브 노 롱거 해빙 원 퍼슨 픽스 푸드 / 포어 더 패멀리 투 이트 투게더 앳 앤 이브닝 밀.",
+          "한국어": "하지만 더 커진 편리함의 단기적이고 명백한 영향은 / 장기적인 영향을 간과하기 쉽게 만들었다 / 한 사람이 더 이상 음식을 만들게 하지 않는 데서 오는 / 가족이 저녁 식사 때 함께 먹도록."
+        },
+        {
+          "번호": "8",
+          "영어": "As time went on, / fewer and fewer families sat down together / to eat dinner.",
+          "한글발음": "애즈 타임 웬트 온, / 퓨어 앤 퓨어 패멀리즈 샛 다운 투게더 / 투 이트 디너.",
+          "한국어": "시간이 지나면서, / 점점 더 적은 가족들이 함께 앉았다 / 저녁을 먹기 위해."
+        },
+        {
+          "번호": "9",
+          "영어": "Meals that took a long time to prepare / became a luxury of the past, / except perhaps for special occasions.",
+          "한글발음": "밀즈 댓 툭 어 롱 타임 투 프리페어 / 비케임 어 럭셔리 어브 더 패스트, / 익셉트 퍼햅스 포어 스페셜 어케이전즈.",
+          "한국어": "준비하는 데 오랜 시간이 걸리는 식사는 / 과거의 사치가 되었다, / 아마 특별한 경우를 제외하고는."
+        },
+        {
+          "번호": "10",
+          "영어": "The effects of the microwave oven on family life / were not anticipated / and would have been difficult to foresee.",
+          "한글발음": "디 이펙츠 어브 더 마이크로웨이브 어븐 온 패멀리 라이프 / 워 낫 앤티서페이티드 / 앤 우드 해브 빈 디피컬트 투 포어시.",
+          "한국어": "전자레인지가 가족생활에 미치는 영향은 / 예상되지 않았다 / 그리고 미리 내다보기 어려웠을 것이다."
+        }
+      ],
+      "어휘": [
+        {
+          "단어": "obvious",
+          "뜻": "명백한, 쉽게 눈에 띄는",
+          "동의어": "evident, clear",
+          "반의어": "subtle",
+          "반의어_뜻": "미묘한, 쉽게 눈에 띄지 않는"
+        },
+        {
+          "단어": "accumulate",
+          "뜻": "시간이 지나며 쌓이다",
+          "동의어": "build up, mount",
+          "반의어": "diminish, decrease",
+          "반의어_뜻": "줄어들다, 감소하다"
+        },
+        {
+          "단어": "apparent",
+          "뜻": "뚜렷하게 드러나는",
+          "동의어": "evident, noticeable",
+          "반의어": "hidden, imperceptible",
+          "반의어_뜻": "숨겨진, 알아차릴 수 없는"
+        },
+        {
+          "단어": "subtle",
+          "뜻": "미묘한, 쉽게 알아차리기 어려운",
+          "동의어": "inconspicuous",
+          "반의어": "obvious, conspicuous",
+          "반의어_뜻": "명백한, 눈에 잘 띄는"
+        },
+        {
+          "단어": "shortening",
+          "뜻": "단축",
+          "동의어": "reduction, decrease",
+          "반의어": "lengthening, extension",
+          "반의어_뜻": "연장, 늘어남"
+        },
+        {
+          "단어": "liberating",
+          "뜻": "부담에서 벗어나게 하는",
+          "동의어": "freeing",
+          "반의어": "restricting",
+          "반의어_뜻": "제약하는"
+        },
+        {
+          "단어": "overlook",
+          "뜻": "간과하다",
+          "동의어": "miss, fail to notice",
+          "반의어": "notice, recognize",
+          "반의어_뜻": "알아차리다, 인식하다"
+        },
+        {
+          "단어": "anticipated",
+          "뜻": "예상된",
+          "동의어": "expected, foreseen",
+          "반의어": "없음",
+          "반의어_뜻": "없음"
+        },
+        {
+          "단어": "foresee",
+          "뜻": "미리 내다보다",
+          "동의어": "anticipate, predict",
+          "반의어": "없음",
+          "반의어_뜻": "없음"
+        }
+      ],
+      "출제포인트": {
+        "핵심 내용 재활용": {
+          "요지": "Focusing on the obvious short-term effects of media and technology makes it easy to miss changes that accumulate over time.",
+          "주제": "The overlooking of long-term changes behind the obvious short-term effects of media and technology",
+          "제목": "Media and Technology: Visible Convenience, Unnoticed Changes",
+          "영어_요약문": "Focusing on the (A) obvious short-term effects of media and technology makes it easy to (B) overlook subtle long-term changes.",
+          "A": "obvious",
+          "B": "overlook",
+          "정답_가능_표현": {
+            "A": [
+              "evident",
+              "readily apparent"
+            ],
+            "B": [
+              "miss",
+              "fail to notice"
+            ]
+          },
+          "풀이_전략": "(1~2)의 눈에 잘 띄는 효과와 덜 뚜렷한 변화의 대비를 확인한다. (6)의 조리시간 단축에 주목하다 (7~10)의 가족 공동 식사 감소 같은 장기 영향을 놓친다는 흐름으로 두 표현을 판단한다."
+        },
+        "어휘 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(1)",
+            "표현": "obvious",
+            "왜_벗어나는가": "obvious는 쉽게 눈에 띄는 특징을 뜻한다. 이를 subtle로 바꾸면 사람들이 미묘한 측면에 집중한다는 뜻이 되어, (2)의 명백한 측면은 알아차리고 미묘한 측면은 놓친다는 대비와 어긋난다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(2)",
+            "표현": "subtle",
+            "왜_벗어나는가": "subtle은 쉽게 드러나지 않는 측면을 뜻한다. obvious로 바꾸면 명백한 측면을 놓친다는 뜻이 되어, 같은 문장의 앞부분에서 명백한 측면을 알아차린다는 설명과 충돌한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(6)",
+            "표현": "liberating",
+            "왜_벗어나는가": "liberating은 조리시간 단축이 요리 담당자의 부담을 덜어 주었다는 뜻이다. restricting으로 바꾸면 시간이 줄어 오히려 제약을 받았다는 뜻이 되어, 빠른 음식 준비의 편리함을 설명하는 앞뒤 내용과 어긋난다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "표현": "overlook",
+            "왜_벗어나는가": "overlook은 장기 영향을 간과한다는 뜻이다. notice로 바꾸면 단기 편리함 때문에 장기 영향을 알아차리기 쉬워졌다는 뜻이 되어, (1)의 변화를 놓친다는 진술과 (10)의 예상하지 못했다는 결론에 어긋난다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(10)",
+            "표현": "anticipated",
+            "왜_벗어나는가": "anticipated는 미리 예상된이라는 뜻이며 were not anticipated는 그 영향을 당시에는 예상하지 못했다는 평가다. expected나 foreseen으로 바꾸면 뜻이 그대로 유지되므로 오답으로 볼 수 없다. 반면 unexpected를 넣은 were not unexpected는 '뜻밖은 아니었다'는 완화된 평가가 된다. 영향을 미리 예상했다고 단정하는 뜻은 아니지만 결과를 어느 정도 짐작할 수 있었다는 쪽으로 기울어, 같은 문장의 would have been difficult to foresee와 (7)에서 장기 영향을 간과했다는 흐름과 어긋난다."
+          }
+        ],
+        "빈칸 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(1)",
+            "핵심구절": "the changes that accumulate over time but are not apparent day to day",
+            "출제이유": "눈에 잘 띄는 매체의 측면에 집중할 때 무엇을 놓치는지 복원하는 자리다. (2)의 미묘한 측면과 (7~10)의 뒤늦게 드러난 가족생활 변화가 근거이므로, 즉각적인 편리함이 아니라 서서히 쌓이는 변화를 넣어야 한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "핵심구절": "overlook the long-term implications",
+            "출제이유": "(6)의 조리시간 단축과 (8~9)의 공동 식사 감소 사이에서 단기 편리함이 무엇을 가리는지 판단해야 한다. But과 short-term/long-term의 대비를 근거로 장기 영향을 간과한다는 의미를 복원하며, 편리함을 부정하거나 장기 영향을 이미 예측했다는 뜻으로 바꾸면 안 된다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(10)",
+            "핵심구절": "were not anticipated and would have been difficult to foresee",
+            "출제이유": "(8~9)의 가족생활 변화가 전자레인지 도입 당시 어떻게 받아들여졌는지 종합하는 자리다. 눈에 보이는 편리함에 가려 장기 영향을 놓쳤다는 (1), (7)의 흐름으로 예상하지 못했고 미리 내다보기 어려웠다는 의미를 복원한다."
+          }
+        ],
+        "문장 삽입 포인트": [
+          {
+            "별점": "★☆☆",
+            "문장번호": "(2)",
+            "삽입후보문장": "Most of us notice the obvious aspects of a new medium or technology while missing the more subtle aspects.",
+            "출제이유": "(1)의 obvious aspects와 변화를 놓친다는 설명을 새 매체·기술의 obvious/subtle 대비로 다시 말한다. 뒤의 (3) for example은 이 일반적인 설명을 전자레인지 사례로 구체화하므로, 일반 진술과 사례 사이의 연결을 확인한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(3)",
+            "삽입후보문장": "Take, for example, the microwave oven.",
+            "출제이유": "for example이 (2)의 새 매체·기술에 대한 일반 진술을 구체적인 전자레인지 사례로 바꾼다. 뒤의 (4) It이 바로 the microwave oven을 받으므로, 일반 설명→사례 대상 제시→그 대상의 도입과 효과라는 연결을 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(4)",
+            "삽입후보문장": "It was introduced in the early 1980s and revolutionized food preparation.",
+            "출제이유": "It은 (3)의 the microwave oven을 받는다. 음식 준비를 혁신했다는 진술 뒤에 (5) Traditionally의 오랜 조리와 (6) Now의 빠른 조리가 이어지므로, 먼저 사례 대상을 제시하고 그 변화의 내용을 비교한다는 흐름을 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(5)",
+            "삽입후보문장": "Traditionally, one person spent the better part of an afternoon fixing an evening meal for a family.",
+            "출제이유": "Traditionally는 (4)의 음식 준비 혁신을 설명하기 위해 예전의 조리 방식을 제시한다. 뒤의 (6) Now 및 this shortening of preparation time과 대응하므로, 오후 대부분을 쓰던 과거와 빨리 준비하는 이후의 대비를 읽어야 한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "삽입후보문장": "Now, it was possible to prepare foods very quickly, and this shortening of preparation time was liberating for the cooks in the family, most of whom tended to be women.",
+            "출제이유": "Now는 (5) Traditionally의 오랜 조리와 대비되고, this shortening of preparation time은 같은 문장 앞부분의 빠른 음식 준비를 받는다. 뒤의 (7) greater convenience와 But은 이 편리함에서 간과된 장기 영향으로 전환하므로, 과거→시간 단축의 이점→장기 영향의 연결을 확인한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "삽입후보문장": "But the short-term, obvious implications of greater convenience made it easy to overlook the long-term implications of no longer having one person fix food for the family to eat together at an evening meal.",
+            "출제이유": "But이 (6)의 시간 단축과 부담 완화에서 장기 영향의 간과로 관점을 바꾼다. greater convenience는 앞의 빠른 조리를 받고, 함께 먹을 음식을 한 사람이 만들지 않게 된다는 내용은 뒤의 (8) 공동 식사 감소로 이어지므로, 단기 이점과 장기 변화의 대비를 읽어야 한다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(8)",
+            "삽입후보문장": "As time went on, fewer and fewer families sat down together to eat dinner.",
+            "출제이유": "As time went on은 (7)의 long-term implications가 시간이 흐르며 드러남을 나타낸다. sat down together to eat dinner는 앞의 가족이 함께 저녁을 먹는 상황을 받고, 뒤의 (9)는 오래 준비하는 식사도 드물어졌음을 덧붙이므로, 장기 영향의 설명에서 구체적인 변화로 이어지는 흐름을 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(9)",
+            "삽입후보문장": "Meals that took a long time to prepare became a luxury of the past, except perhaps for special occasions.",
+            "출제이유": "(8)의 가족 공동 식사 감소 뒤에, 준비 시간이 긴 식사도 과거의 사치가 되었다는 또 다른 변화를 덧붙인다. except perhaps for special occasions의 예외를 유지하고, 뒤의 (10)이 두 변화를 family life에 미친 예상 밖의 영향으로 묶는다는 연결을 확인한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(10)",
+            "삽입후보문장": "The effects of the microwave oven on family life were not anticipated and would have been difficult to foresee.",
+            "출제이유": "The effects of the microwave oven on family life는 (7~9)의 식사 준비 방식과 가족 공동 식사의 변화를 묶는다. not anticipated와 difficult to foresee가 (1)의 서서히 쌓이는 변화를 놓친다는 문제를 사례의 결론으로 마무리하므로, 단기 편리함의 설명과 구별해 종합 기능을 읽어야 한다."
+          }
+        ],
+        "글의 순서 포인트": {
+          "BOX": {
+            "문장번호": "(1~2)",
+            "기능": "일반 진술: 눈에 띄는 측면에 집중하면 서서히 쌓이는 변화를 놓친다. 다음의 for example이 이 진술을 사례로 구체화한다."
+          },
+          "A": {
+            "문장번호": "(3~5)",
+            "기능": "전자레인지 사례를 소개하고 It으로 이어 받아, 혁신 이전에는 오후 대부분을 조리에 썼음을 제시한다. Traditionally가 다음 Now와 대비된다."
+          },
+          "B": {
+            "문장번호": "(6)",
+            "기능": "Now로 빠른 음식 준비와 요리 담당자의 부담 완화를 제시한다. this shortening이 시간 단축을 받고, 다음 greater convenience와 But의 전환을 준비한다."
+          },
+          "C": {
+            "문장번호": "(7~10)",
+            "기능": "But으로 단기 이점에서 간과된 장기 영향으로 전환한다. As time went on 뒤의 공동 식사 감소와 오래 준비하는 식사의 희소화를 예상하지 못한 가족생활의 영향으로 종합한다."
+          },
+          "정답": "A-B-C"
+        },
+        "서술형 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(1)",
+            "영어원문": "When we focus on the obvious aspects of media, we miss the changes that accumulate over time but are not apparent day to day.",
+            "문법포인트설명": "매체의 뚜렷한 측면에 집중하면 서서히 쌓이는 변화를 놓친다는 중심 내용을 표현한다. 문장 전체의 조건 영작을 추천하며 when과 changes를 수식하는 관계절을 사용하게 할 수 있다. that은 accumulate와 are not apparent에 공통으로 걸리고 but은 두 속성을 연결한다. 조건절의 앞뒤 위치가 달라도 의미와 조건이 맞으면 허용하며, 눈에 안 보이는 변화가 없다는 뜻으로 바꾸지 않는다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(2)",
+            "영어원문": "Most of us notice the obvious aspects of a new medium or technology while missing the more subtle aspects.",
+            "문법포인트설명": "명백한 측면은 알아차리고 미묘한 측면은 놓친다는 대비를 표현한다. 문장 전체를 while을 사용한 조건 영작 대상으로 추천하며, while missing의 주체가 Most of us와 같음을 확인한다. while we miss처럼 주어와 동사를 복원한 표현도 조건이 허용하면 인정하고, 두 행동을 시간적 선후로만 바꾸지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(6)",
+            "영어원문": "Now, it was possible to prepare foods very quickly, and this shortening of preparation time was liberating for the cooks in the family, most of whom tended to be women.",
+            "문법포인트설명": "빠른 음식 준비가 요리 담당자의 부담을 덜었다는 단기 이점을 표현한다. 문장 전체의 조건 영작을 추천하며 it was possible to, this shortening, most of whom을 사용할 수 있다. it은 가주어, to prepare foods는 진주어이고, whom은 the cooks를 받는다. tended to be의 경향을 모두가 여성이라는 단정으로 바꾸지 않으며, 관계절을 별도 문장으로 풀어도 조건과 의미가 맞으면 허용할 수 있다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(7)",
+            "영어원문": "But the short-term, obvious implications of greater convenience made it easy to overlook the long-term implications of no longer having one person fix food for the family to eat together at an evening meal.",
+            "문법포인트설명": "단기 편리함이 장기 영향을 간과하기 쉽게 만들었다는 핵심 전환을 표현한다. 문장 전체의 조건 영작을 추천하며 made it easy to overlook과 have+목적어+동사원형을 사용하도록 할 수 있다. it은 가목적어이고 to overlook 이하가 실제 내용이며, no longer having one person fix food에서 fix를 to fix로 바꾸지 않는다. for the family to eat together는 함께 먹는 주체와 목적을 보존해야 한다. 구조 조건이 없는 영작에서는 의미가 같은 다른 문장을 허용한다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(8)",
+            "영어원문": "As time went on, fewer and fewer families sat down together to eat dinner.",
+            "문법포인트설명": "시간이 흐르며 함께 저녁을 먹는 가족이 줄었다는 장기 변화를 표현한다. 문장 전체를 as, fewer and fewer, to eat을 쓰는 조건 영작 대상으로 추천한다. families가 셀 수 있는 복수 명사이므로 fewer를 사용하고 to eat dinner는 앉은 목적을 나타낸다. 조건이 없는 영작에서는 the number of families decreased 같은 표현도 의미가 맞으면 허용하며, 가족 구성원 수가 줄었다는 뜻으로 바꾸지 않는다."
+          },
+          {
+            "별점": "★★☆",
+            "문장번호": "(9)",
+            "영어원문": "Meals that took a long time to prepare became a luxury of the past, except perhaps for special occasions.",
+            "문법포인트설명": "오래 준비하는 식사가 드물어졌지만 특별한 경우에는 예외일 수 있다는 내용을 표현한다. 문장 전체 영작을 추천하며 Meals를 수식하는 that절, took a long time to prepare, except perhaps for를 확인한다. to prepare에서 준비되는 대상은 Meals이고 perhaps의 불확실성을 남겨야 한다. 관계절을 다른 수식 방식으로 바꿔도 조건과 의미가 맞으면 허용하며, 특별한 때에도 식사를 준비하지 않는다는 뜻으로 바꾸지 않는다."
+          },
+          {
+            "별점": "★★★",
+            "문장번호": "(10)",
+            "영어원문": "The effects of the microwave oven on family life were not anticipated and would have been difficult to foresee.",
+            "문법포인트설명": "가족생활에 미친 영향을 당시 예상하지 못했고 미리 내다보기도 어려웠다는 결론을 표현한다. 문장 전체의 조건 영작을 추천하며 were not anticipated와 would have been difficult to foresee를 사용하도록 할 수 있다. 과거 수동태의 부정과 과거 상황을 되돌아보는 would have been을 함께 보존한다. foresee의 대상은 문장 주어인 effects이며, 같은 뜻의 예상 표현은 조건이 허용하면 인정하되 실제로 예측했다는 뜻으로 바꾸지 않는다."
+          }
+        ],
+        "함축 의미 포인트": [
+          {
+            "별점": "★★★",
+            "문장번호": "(9)",
+            "핵심표현": "a luxury of the past",
+            "함축의미": "일상적으로 하던 오래 걸리는 식사 준비가 이제는 특별한 경우가 아니면 누리기 어려운 드문 일이 되었다는 뜻이다.",
+            "왜_중요한가": "luxury를 비싼 음식이나 부유층의 식사로만 해석하면 문맥을 놓친다. (5)의 긴 조리시간과 (8)의 공동 식사 감소, (9)의 특별한 경우라는 예외를 함께 읽어 이전의 일상적인 식사 방식이 드물어졌다는 의미를 판단한다."
+          }
+        ]
+      },
+      "논리_시각화": {
+        "schema_version": "1.0.0",
+        "diagram_type": "GENERAL_TO_SPECIFIC",
+        "selection_reason": "매체·기술의 뚜렷한 측면에 집중하면 점진적 변화를 놓친다는 일반 진술을 전자레인지 사례로 구체화한다. 사례 안의 과거·이후와 단기·장기 대비는 각각 연결로 보존하되, 글 전체가 두 독립 대상을 비교하는 구조는 아니므로 일반→사례형을 선택한다.",
+        "nodes": [
+          {
+            "id": "N1",
+            "sentence_numbers": [
+              "1",
+              "2"
+            ],
+            "role": "일반 진술",
+            "label": "눈에 띄는 측면에 집중해 점진적 변화를 놓침",
+            "evidence": [
+              {
+                "sentence_no": "1",
+                "quote": "miss the changes that accumulate over time"
+              },
+              {
+                "sentence_no": "2",
+                "quote": "while missing the more subtle aspects"
+              }
+            ]
+          },
+          {
+            "id": "N2",
+            "sentence_numbers": [
+              "3",
+              "4",
+              "5"
+            ],
+            "role": "사례와 과거 상황",
+            "label": "전자레인지 도입 전에는 조리에 긴 시간을 씀",
+            "evidence": [
+              {
+                "sentence_no": "3",
+                "quote": "Take, for example, the microwave oven."
+              },
+              {
+                "sentence_no": "4",
+                "quote": "revolutionized food preparation"
+              },
+              {
+                "sentence_no": "5",
+                "quote": "spent the better part of an afternoon"
+              }
+            ]
+          },
+          {
+            "id": "N3",
+            "sentence_numbers": [
+              "6"
+            ],
+            "role": "단기 효과",
+            "label": "빠른 조리로 요리 담당자의 부담이 줄어듦",
+            "evidence": [
+              {
+                "sentence_no": "6",
+                "quote": "this shortening of preparation time was liberating"
+              }
+            ]
+          },
+          {
+            "id": "N4",
+            "sentence_numbers": [
+              "7",
+              "8",
+              "9"
+            ],
+            "role": "간과된 장기 변화",
+            "label": "가족 공동 식사 감소·오래 준비하는 식사의 희소화",
+            "evidence": [
+              {
+                "sentence_no": "7",
+                "quote": "overlook the long-term implications"
+              },
+              {
+                "sentence_no": "8",
+                "quote": "fewer and fewer families sat down together to eat dinner"
+              },
+              {
+                "sentence_no": "9",
+                "quote": "became a luxury of the past"
+              }
+            ]
+          },
+          {
+            "id": "N5",
+            "sentence_numbers": [
+              "10"
+            ],
+            "role": "사례의 종합",
+            "label": "가족생활의 영향은 예상 밖이며 예측도 어려웠음",
+            "evidence": [
+              {
+                "sentence_no": "10",
+                "quote": "were not anticipated and would have been difficult to foresee"
+              }
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "id": "E1",
+            "from": "N1",
+            "to": "N2",
+            "relation": "EXAMPLE",
+            "label": "전자레인지 사례로 구체화",
+            "evidence": [
+              {
+                "sentence_no": "2",
+                "quote": "a new medium or technology"
+              },
+              {
+                "sentence_no": "3",
+                "quote": "Take, for example, the microwave oven."
+              }
+            ]
+          },
+          {
+            "id": "E2",
+            "from": "N2",
+            "to": "N3",
+            "relation": "CONTRAST",
+            "label": "오랜 조리에서 빠른 조리로",
+            "evidence": [
+              {
+                "sentence_no": "5",
+                "quote": "Traditionally, one person spent the better part of an afternoon"
+              },
+              {
+                "sentence_no": "6",
+                "quote": "Now, it was possible to prepare foods very quickly"
+              }
+            ]
+          },
+          {
+            "id": "E3",
+            "from": "N3",
+            "to": "N4",
+            "relation": "CONTRAST",
+            "label": "눈에 띄는 편리함과 가려진 장기 영향",
+            "evidence": [
+              {
+                "sentence_no": "6",
+                "quote": "this shortening of preparation time was liberating"
+              },
+              {
+                "sentence_no": "7",
+                "quote": "But the short-term, obvious implications of greater convenience"
+              },
+              {
+                "sentence_no": "7",
+                "quote": "overlook the long-term implications"
+              }
+            ]
+          },
+          {
+            "id": "E4",
+            "from": "N4",
+            "to": "N5",
+            "relation": "ELABORATION",
+            "label": "예상하지 못한 영향으로 종합",
+            "evidence": [
+              {
+                "sentence_no": "8",
+                "quote": "fewer and fewer families sat down together to eat dinner"
+              },
+              {
+                "sentence_no": "9",
+                "quote": "became a luxury of the past"
+              },
+              {
+                "sentence_no": "10",
+                "quote": "The effects of the microwave oven on family life were not anticipated"
+              }
+            ]
+          }
+        ],
+        "analogies": [],
+        "rendering": {
+          "layout": "FLOW",
+          "reading_order": [
+            "N1",
+            "N2",
+            "N3",
+            "N4",
+            "N5"
+          ],
+          "groups": [],
+          "target": "A4_HALF_PAGE",
+          "show_title": false
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "PASSAGES": [
+    {
+      "번호": "1",
+      "전체_내용": "연습이 실력에 도움이 된다는 글입니다.",
+      "배경_지식": [
+        {
+          "제목": "Practice",
+          "내용": "반복의 효과"
+        }
+      ],
+      "소재": [
+        "practice"
+      ],
+      "주제": "연습",
+      "요지": "계속 연습하면 나아진다 (even when progress is slow).",
+      "제목": "The Value of Practice (for Everyone)",
+      "한_문장_요약": "연습이 성장에 기여한다.",
+      "주제문_번호": "1",
+      "지문": [
+        {
+          "번호": "1",
+          "영어": "Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice. / Students can improve their skills / through regular practice.",
+          "한국어": "학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해. / 학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해.\n학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해.",
+          "한글발음": "스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스. / 스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스.\n스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스."
+        }
+      ],
+      "어휘": [
+        {
+          "단어": "practice",
+          "뜻": "연습",
+          "동의어": "training",
+          "반의어": "neglect",
+          "반의어_뜻": "방치"
+        }
+      ],
+      "출제포인트": {
+        "핵심 내용 재활용": {
+          "정보": [
+            "삭제하면 안 되는 05 데이터"
+          ]
+        }
+      }
+    },
+    {
+      "번호": "2",
+      "전체_내용": "연습이 실력에 도움이 된다는 글입니다.",
+      "배경_지식": [
+        {
+          "제목": "Practice",
+          "내용": "반복의 효과"
+        }
+      ],
+      "소재": [
+        "practice"
+      ],
+      "주제": "연습",
+      "요지": "계속 연습하면 나아진다 (even when progress is slow).",
+      "제목": "The Value of Practice (for Everyone)",
+      "한_문장_요약": "연습이 성장에 기여한다.",
+      "주제문_번호": "1",
+      "지문": [
+        {
+          "번호": "1",
+          "영어": "Students can improve their skills / through regular practice.",
+          "한국어": "학생들은 자신의 실력을 향상시킬 수 있다 / 꾸준한 연습을 통해.",
+          "한글발음": "스튜던츠 캔 임프루브 데어 스킬즈 / 쓰루 레귤러 프랙티스."
+        }
+      ],
+      "어휘": [
+        {
+          "단어": "practice",
+          "뜻": "연습",
+          "동의어": "training",
+          "반의어": "neglect",
+          "반의어_뜻": "방치"
+        }
+      ],
+      "출제포인트": {
+        "핵심 내용 재활용": {
+          "정보": [
+            "삭제하면 안 되는 05 데이터"
+          ]
+        }
+      }
+    }
+  ]
+}

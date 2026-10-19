@@ -1,0 +1,338 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "박사원 V2 논리_시각화 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "diagram_type",
+    "selection_reason",
+    "nodes",
+    "edges",
+    "analogies",
+    "rendering"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "diagram_type": {
+      "type": "string",
+      "enum": [
+        "CAUSAL_FLOW",
+        "CONTRAST",
+        "ANALOGY",
+        "PROCESS",
+        "PROBLEM_SOLUTION",
+        "CLAIM_EVIDENCE",
+        "GENERAL_TO_SPECIFIC",
+        "MIXED"
+      ]
+    },
+    "selection_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      },
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      },
+      "minItems": 2,
+      "maxItems": 8
+    },
+    "analogies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/analogy"
+      },
+      "minItems": 0,
+      "maxItems": 3
+    },
+    "rendering": {
+      "$ref": "#/$defs/rendering"
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sentence_no",
+        "quote"
+      ],
+      "properties": {
+        "sentence_no": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sentence_numbers",
+        "role",
+        "label",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^N[1-9][0-9]*$"
+        },
+        "sentence_numbers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "from",
+        "to",
+        "relation",
+        "label",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^E[1-9][0-9]*$"
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^N[1-9][0-9]*$",
+          "description": "논리 관계가 출발하는 node ID. reading_order에서 뒤에 있는 node도 지정할 수 있습니다."
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^N[1-9][0-9]*$",
+          "description": "논리 관계가 향하는 node ID. reading_order와 무관하게 의미 방향을 기록합니다."
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "CAUSE",
+            "CONTRAST",
+            "ANALOGY",
+            "SEQUENCE",
+            "PROBLEM_SOLUTION",
+            "EVIDENCE",
+            "EXAMPLE",
+            "ELABORATION"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "analogy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "node_id",
+        "vehicle",
+        "target",
+        "core_property",
+        "limit",
+        "mappings",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^A[1-9][0-9]*$"
+        },
+        "node_id": {
+          "type": "string",
+          "pattern": "^N[1-9][0-9]*$"
+        },
+        "vehicle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "core_property": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "limit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "vehicle_property",
+              "target_property",
+              "evidence"
+            ],
+            "properties": {
+              "vehicle_property": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "target_property": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidence"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "rendering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layout",
+        "reading_order",
+        "groups",
+        "target",
+        "show_title"
+      ],
+      "properties": {
+        "layout": {
+          "type": "string",
+          "enum": [
+            "FLOW",
+            "CONTRAST_COLUMNS",
+            "ANALOGY_MAP",
+            "BRANCH"
+          ]
+        },
+        "reading_order": {
+          "type": "array",
+          "description": "노드의 화면 배치와 읽기 순서이며 Edge의 논리 방향을 제한하지 않습니다.",
+          "items": {
+            "type": "string",
+            "pattern": "^N[1-9][0-9]*$"
+          },
+          "minItems": 3,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "node_ids"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^G[1-9][0-9]*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24
+              },
+              "node_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^N[1-9][0-9]*$"
+                },
+                "minItems": 1,
+                "maxItems": 5,
+                "uniqueItems": true
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 5
+        },
+        "target": {
+          "const": "A4_HALF_PAGE"
+        },
+        "show_title": {
+          "const": false
+        }
+      }
+    }
+  }
+}

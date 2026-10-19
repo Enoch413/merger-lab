@@ -1,0 +1,378 @@
+### MERGER_LAB_SERVER.py
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER_LAB_SERVER.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER LAB V2\MERGER_LAB_SERVER.py', LF will be replaced by CRLF the next time Git touches it
+diff --git "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER_LAB_SERVER.py" "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\MERGER_LAB_SERVER.py"
+index 5c6ea7d..950136f 100644
+--- "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER_LAB_SERVER.py"	
++++ "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\MERGER_LAB_SERVER.py"	
+@@ -14,12 +14,16 @@ from http import HTTPStatus
+ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+ from pathlib import Path
+ 
++from logic_visualizer import validate_logic_visualization
++
+ HOST = "127.0.0.1"
+-PORT = 8781
++PORT = 8782
+ ROOT_DIR = Path(__file__).resolve().parent
+ INDEX_PATH = ROOT_DIR / "index.html"
+ APP_INDEX_PATH = ROOT_DIR / "app" / "index.html"
+ GENERATOR_PATH = ROOT_DIR / "master_analysis_hwpx_generator.py"
++LOGIC_VISUALIZER_PATH = ROOT_DIR / "logic_visualizer.py"
++HWPX_EMBEDDER_PATH = ROOT_DIR / "hwpx_logic_embedder.py"
+ TEMPLATE_PATH = ROOT_DIR / "analysis_template.hwpx"
+ PRONUNCIATION_TEMPLATE_PATH = ROOT_DIR / "analysis_template_pronunciation.hwpx"
+ 
+@@ -46,9 +50,11 @@ def json_bytes(payload):
+     return json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+ 
+ 
+-def validate_payload(payload, pronunciation="excluded"):
++def validate_payload(payload, pronunciation="excluded", output_mode="compatibility"):
+     if pronunciation not in ("excluded", "included"):
+         raise ValueError("발음 옵션은 'included' 또는 'excluded'여야 합니다.")
++    if output_mode not in ("compatibility", "v2"):
++        raise ValueError("출력 모드는 'compatibility' 또는 'v2'여야 합니다.")
+     if not isinstance(payload, dict):
+         raise ValueError("Root payload must be a JSON object.")
+     passages = payload.get("PASSAGES")
+@@ -78,6 +84,8 @@ def validate_payload(payload, pronunciation="excluded"):
+                     raise ValueError(f"{location}: 한글발음은 문자열이어야 합니다 (현재 {type(value).__name__}).")
+                 if not value.strip():
+                     raise ValueError(f"{location}: 한글발음이 비어 있습니다.")
++        if output_mode == "v2":
++            validate_logic_visualization(passage, index)
+ 
+ 
+ def decode_process_output(raw):
+@@ -98,8 +106,8 @@ def find_generated_hwpx(workdir: Path) -> Path:
+     return max(candidates, key=lambda path: path.stat().st_mtime)
+ 
+ 
+-def build_bundle(payload, pronunciation="excluded"):
+-    validate_payload(payload, pronunciation)
++def build_bundle(payload, pronunciation="excluded", output_mode="compatibility"):
++    validate_payload(payload, pronunciation, output_mode)
+     template_path = PRONUNCIATION_TEMPLATE_PATH if pronunciation == "included" else TEMPLATE_PATH
+     with tempfile.TemporaryDirectory(prefix="merger_lab_") as temp_dir:
+         workdir = Path(temp_dir)
+@@ -108,9 +116,11 @@ def build_bundle(payload, pronunciation="excluded"):
+         (workdir / "input.json").write_bytes(merged_bytes)
+         shutil.copy2(template_path, workdir / template_path.name)
+         shutil.copy2(GENERATOR_PATH, workdir / GENERATOR_PATH.name)
++        shutil.copy2(LOGIC_VISUALIZER_PATH, workdir / LOGIC_VISUALIZER_PATH.name)
++        shutil.copy2(HWPX_EMBEDDER_PATH, workdir / HWPX_EMBEDDER_PATH.name)
+         completed = subprocess.run(
+             [sys.executable, str(workdir / GENERATOR_PATH.name), "--template", template_path.name,
+-             "--pronunciation", pronunciation], cwd=workdir, capture_output=True
++             "--pronunciation", pronunciation, "--mode", output_mode], cwd=workdir, capture_output=True
+         )
+         if completed.returncode != 0:
+             stderr = decode_process_output(completed.stderr)
+@@ -123,11 +133,13 @@ def build_bundle(payload, pronunciation="excluded"):
+         with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+             zf.writestr("MASTER_ANALYSIS_merged.json", merged_bytes)
+             zf.write(hwpx_path, hwpx_path.name)
++            for diagram in sorted((workdir / "diagrams").glob("*.png")) if (workdir / "diagrams").exists() else []:
++                zf.write(diagram, f"diagrams/{diagram.name}")
+         return buffer.getvalue(), download_name
+ 
+ 
+ class Handler(BaseHTTPRequestHandler):
+-    server_version = "MergerLab/1.0"
++    server_version = "MergerLab/2.0"
+ 
+     def log_message(self, format, *args):
+         return
+@@ -161,7 +173,7 @@ class Handler(BaseHTTPRequestHandler):
+             self.send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"ok": False, "error": "app/index.html was not found."})
+             return
+         if path == "/api/health":
+-            self.send_json(HTTPStatus.OK, {"ok": True})
++            self.send_json(HTTPStatus.OK, {"ok": True, "version": "2.0", "modes": ["compatibility", "v2"]})
+             return
+         self.send_json(HTTPStatus.NOT_FOUND, {"ok": False, "error": "Route not found."})
+ 
+@@ -174,7 +186,9 @@ class Handler(BaseHTTPRequestHandler):
+             raw = self.rfile.read(length)
+             request_payload = json.loads(raw.decode("utf-8"))
+             bundle_bytes, download_name = build_bundle(
+-                request_payload.get("mergedPayload"), request_payload.get("pronunciation", "excluded")
++                request_payload.get("mergedPayload"),
++                request_payload.get("pronunciation", "excluded"),
++                request_payload.get("outputMode", "compatibility"),
+             )
+         except json.JSONDecodeError:
+             self.send_json(HTTPStatus.BAD_REQUEST, {"ok": False, "error": "Request body is not valid JSON."})
+@@ -192,7 +206,13 @@ class Handler(BaseHTTPRequestHandler):
+ 
+ 
+ def ensure_assets():
+-    for path in (GENERATOR_PATH, TEMPLATE_PATH, PRONUNCIATION_TEMPLATE_PATH):
++    for path in (
++        GENERATOR_PATH,
++        LOGIC_VISUALIZER_PATH,
++        HWPX_EMBEDDER_PATH,
++        TEMPLATE_PATH,
++        PRONUNCIATION_TEMPLATE_PATH,
++    ):
+         if not path.exists():
+             raise FileNotFoundError(f"Missing required file: {path}")
+ 
+
+### master_analysis_hwpx_generator.py
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\master_analysis_hwpx_generator.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER LAB V2\master_analysis_hwpx_generator.py', LF will be replaced by CRLF the next time Git touches it
+diff --git "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\master_analysis_hwpx_generator.py" "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\master_analysis_hwpx_generator.py"
+index c599d7b..0e803c5 100644
+--- "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\master_analysis_hwpx_generator.py"	
++++ "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\master_analysis_hwpx_generator.py"	
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env python3
+ # -*- coding: utf-8 -*-
+-"""MASTER_ANALYSIS JSON으로 00~04 HWPX 분석 문서를 생성한다."""
++"""MASTER_ANALYSIS JSON으로 00~04 또는 V2 00~05 HWPX 분석 문서를 생성한다."""
+ 
+ import argparse
+ import copy
+@@ -16,6 +16,15 @@ from pathlib import Path
+ 
+ from lxml import etree
+ 
++from hwpx_logic_embedder import (
++    add_png_resource,
++    remove_logic_elements,
++    remove_placeholder_resource,
++    replace_logic_picture,
++    validate_hwpx_image_references,
++)
++from logic_visualizer import render_logic_visualization, validate_logic_visualization
++
+ HP_NS = "http://www.hancom.co.kr/hwpml/2011/paragraph"
+ HS_NS = "http://www.hancom.co.kr/hwpml/2011/section"
+ HH_NS = "http://www.hancom.co.kr/hwpml/2011/head"
+@@ -932,7 +941,9 @@ def _validate_vocab_list(obj, key, field_name):
+         _validate_string_field(item, "반의어_뜻", f"{field_name}[{idx}].반의어_뜻")
+ 
+ 
+-def validate_input(data, pronunciation=False):
++def validate_input(data, pronunciation=False, output_mode="compatibility"):
++    if output_mode not in ("compatibility", "v2"):
++        raise ValueError("출력 모드는 'compatibility' 또는 'v2'여야 합니다.")
+     if "PASSAGES" not in data:
+         raise KeyError('최상위 키 "PASSAGES"가 없습니다.')
+     _require_type(data["PASSAGES"], list, "PASSAGES")
+@@ -954,6 +965,8 @@ def validate_input(data, pronunciation=False):
+         _validate_list_of_strings(passage, "소재", f"{field_name}.소재")
+         _validate_sentence_list(passage, "지문", f"{field_name}.지문", pronunciation, passage["번호"])
+         _validate_vocab_list(passage, "어휘", f"{field_name}.어휘")
++        if output_mode == "v2":
++            validate_logic_visualization(passage, p_idx)
+ 
+ 
+ def get_output_path(passages, workdir: Path) -> Path:
+@@ -1103,6 +1116,7 @@ def count_tables_in_elements(elements):
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--pronunciation", choices=("included", "excluded"), default="excluded")
++    parser.add_argument("--mode", choices=("compatibility", "v2"), default="compatibility")
+     parser.add_argument("--template", help="작업 폴더에 있는 HWPX 템플릿 파일명")
+     args = parser.parse_args()
+     expected_name = ("analysis_template_pronunciation.hwpx" if args.pronunciation == "included"
+@@ -1119,7 +1133,11 @@ def main():
+     with input_json.open("r", encoding="utf-8") as f:
+         data = json.load(f)
+ 
+-    validate_input(data, pronunciation=args.pronunciation == "included")
++    validate_input(
++        data,
++        pronunciation=args.pronunciation == "included",
++        output_mode=args.mode,
++    )
+     passages = data["PASSAGES"]
+     template_path = workdir / template_name
+     if not template_path.is_file():
+@@ -1144,8 +1162,10 @@ def main():
+     header_root = header_tree.getroot() if header_tree is not None else None
+ 
+     top_children = list(root)
+-    # 00~04 블록만 복제한다. 마지막 영작 페이지는 두 템플릿 모두 없다.
++    # 템플릿의 6개 표는 그대로 유지하고 V2 모드에서만 05 제목·그림을 사용한다.
+     template_block = [copy.deepcopy(e) for e in top_children]
++    if args.mode == "compatibility":
++        template_block = remove_logic_elements(template_block)
+     tables_per_block = count_tables_in_elements(template_block)
+     if tables_per_block != 6:
+         raise ValueError(f"00~04 템플릿 표는 6개여야 합니다. actual={tables_per_block}")
+@@ -1155,6 +1175,13 @@ def main():
+ 
+     for idx, content in enumerate(passages):
+         block = [copy.deepcopy(e) for e in template_block]
++        if args.mode == "v2":
++            diagrams_dir = workdir / "diagrams"
++            diagram_path = diagrams_dir / f"logic_{idx + 1:03d}.png"
++            render_logic_visualization(content, diagram_path)
++            resource_id = f"logic_{idx + 1:03d}"
++            replace_logic_picture(block, resource_id, idx)
++            add_png_resource(work_xml_dir, resource_id, diagram_path)
+         enforce_fixed_page_layout(block, is_first_block=(idx == 0))
+         for elem in block:
+             root.append(elem)
+@@ -1162,6 +1189,7 @@ def main():
+         block_tables = root.findall('.//hp:tbl', NS)[idx * tables_per_block:(idx + 1) * tables_per_block]
+         patch_all(block_tables, content, pronunciation=args.pronunciation == "included")
+ 
++    remove_placeholder_resource(work_xml_dir)
+     normalize_all_tables(root)
+     unlock_document_editing(root, header_root)
+     tree.write(str(section_xml), xml_declaration=True, encoding="UTF-8", standalone=True)
+@@ -1184,6 +1212,14 @@ def main():
+                     continue
+                 zf.write(fpath, arcname)
+ 
++    image_report = validate_hwpx_image_references(output_path)
++    if not image_report["ok"]:
++        output_path.unlink(missing_ok=True)
++        raise ValueError("HWPX 이미지 참조 검증 실패: " + "; ".join(image_report["errors"]))
++    if args.mode == "v2" and len(image_report["logic_image_references"]) != len(passages):
++        output_path.unlink(missing_ok=True)
++        raise ValueError("HWPX 논리 시각화 이미지 수가 지문 수와 일치하지 않습니다.")
++
+     shutil.rmtree(work_xml_dir)
+     print(f"완료: {output_path.name}")
+ 
+
+### app\index.html
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\app\index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER LAB V2\app\index.html', LF will be replaced by CRLF the next time Git touches it
+diff --git "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\app\\index.html" "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\app\\index.html"
+index 7630745..b5483b1 100644
+--- "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\app\\index.html"	
++++ "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\app\\index.html"	
+@@ -3,7 +3,7 @@
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-<title>MERGER LAB</title>
++<title>MERGER LAB V2</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lexend:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+@@ -357,6 +357,13 @@
+ 
+   .pronunciation-choice input { accent-color: #1f6b61; }
+ 
++  .output-mode-options {
++    margin: 16px 0 0;
++    padding: 14px 0 0;
++    border: 0;
++    border-top: 1px solid rgba(24, 71, 72, 0.1);
++  }
++
+   .inline-actions {
+     display: grid;
+     grid-template-columns: 1fr;
+@@ -764,7 +771,7 @@
+ <body>
+ <div id="header">
+   <div class="header-copy">
+-    <h1>MERGER LAB</h1>
++    <h1>MERGER LAB V2</h1>
+   </div>
+   <div class="badge">WORKSPACE</div>
+ </div>
+@@ -806,6 +813,12 @@
+         <label class="pronunciation-choice"><input type="radio" name="pronunciation" value="included"> 발음 포함</label>
+         <div class="hint">발음 포함은 모든 문장의 한글발음 값이 필요합니다. 통합 JSON은 어느 쪽이든 동일합니다.</div>
+       </fieldset>
++      <fieldset class="output-mode-options">
++        <legend class="input-label">교재 출력 모드</legend>
++        <label class="pronunciation-choice"><input type="radio" name="output-mode" value="v2" checked> V2 논리 시각화 (00~05)</label>
++        <label class="pronunciation-choice"><input type="radio" name="output-mode" value="compatibility"> 기존 호환 (00~04)</label>
++        <div class="hint">V2는 각 지문에 검증된 논리_시각화가 필요합니다. 기존 호환은 구형 JSON도 처리합니다.</div>
++      </fieldset>
+       <div class="left-action-stack">
+         <button id="bundle-btn" class="btn-primary" type="button" disabled>ZIP 다운로드</button>
+         <div class="inline-actions">
+@@ -1102,7 +1115,8 @@
+         },
+         body: JSON.stringify({
+           mergedPayload: buildMergedPayload(),
+-          pronunciation: document.querySelector('input[name="pronunciation"]:checked').value
++          pronunciation: document.querySelector('input[name="pronunciation"]:checked').value,
++          outputMode: document.querySelector('input[name="output-mode"]:checked').value
+         })
+       });
+ 
+@@ -1122,7 +1136,8 @@
+       const blob = await response.blob();
+       const fileName = parseDownloadName(response.headers.get("Content-Disposition"));
+       downloadBlob(blob, fileName);
+-      updateStatus("통합본과 HWPX가 생성되었습니다.", "ok");
++      const mode = document.querySelector('input[name="output-mode"]:checked').value;
++      updateStatus(mode === "v2" ? "통합본·HWPX·논리 도식이 생성되었습니다." : "통합본과 기존 호환 HWPX가 생성되었습니다.", "ok");
+     } catch (error) {
+       updateStatus(error.message || "ZIP 생성 중 오류가 발생했습니다.", "warn");
+     } finally {
+
+### index.html
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER LAB V2\index.html', LF will be replaced by CRLF the next time Git touches it
+diff --git "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\index.html" "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\index.html"
+index 3692cda..33ecb82 100644
+--- "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\index.html"	
++++ "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\index.html"	
+@@ -3,7 +3,7 @@
+ <head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+-  <title>MERGER LAB</title>
++  <title>MERGER LAB V2</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+@@ -100,7 +100,7 @@
+   <main>
+     <section class="hero">
+       <div class="hero-top">
+-        <h1 class="title">MERGER LAB</h1>
++        <h1 class="title">MERGER LAB V2</h1>
+         <a class="primary-btn" href="./app/index.html">앱 열기</a>
+       </div>
+     </section>
+
+### START_MASTER_ANALYSIS_BUNDLE.bat
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\START_MASTER_ANALYSIS_BUNDLE.bat', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:\Users\CHOI\Documents\MERGER LAB\MERGER LAB V2\START_MASTER_ANALYSIS_BUNDLE.bat', LF will be replaced by CRLF the next time Git touches it
+diff --git "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\START_MASTER_ANALYSIS_BUNDLE.bat" "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\START_MASTER_ANALYSIS_BUNDLE.bat"
+index 056610a..ebed786 100644
+--- "a/C:\\Users\\CHOI\\Documents\\MERGER LAB\\START_MASTER_ANALYSIS_BUNDLE.bat"	
++++ "b/C:\\Users\\CHOI\\Documents\\MERGER LAB\\MERGER LAB V2\\START_MASTER_ANALYSIS_BUNDLE.bat"	
+@@ -3,8 +3,8 @@ setlocal
+ 
+ cd /d "%~dp0"
+ 
+-set "URL=http://127.0.0.1:8781/"
+-set "HEALTH_URL=http://127.0.0.1:8781/api/health"
++set "URL=http://127.0.0.1:8782/"
++set "HEALTH_URL=http://127.0.0.1:8782/api/health"
+ set "SCRIPT=MERGER_LAB_SERVER.py"
+ 
+ powershell -NoProfile -Command "try { $response = Invoke-WebRequest -UseBasicParsing '%HEALTH_URL%' -TimeoutSec 2; if ($response.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }" >nul 2>&1
+@@ -15,13 +15,13 @@ if not errorlevel 1 (
+ 
+ where py >nul 2>&1
+ if not errorlevel 1 (
+-    start "MERGER LAB SERVER" /D "%~dp0" cmd /k py -3 "%SCRIPT%"
++    start "MERGER LAB V2 SERVER" /D "%~dp0" cmd /k py -3 "%SCRIPT%"
+     exit /b 0
+ )
+ 
+ where python >nul 2>&1
+ if not errorlevel 1 (
+-    start "MERGER LAB SERVER" /D "%~dp0" cmd /k python "%SCRIPT%"
++    start "MERGER LAB V2 SERVER" /D "%~dp0" cmd /k python "%SCRIPT%"
+     exit /b 0
+ )
+ 
+

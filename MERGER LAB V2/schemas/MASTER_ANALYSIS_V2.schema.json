@@ -1,0 +1,863 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CODELAB MASTER_ANALYSIS V2 — unchanged R2.2 plus optional 논리_시각화",
+  "description": "Mechanical transcription only. Linguistic correctness, pronunciation and point uniqueness require source review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "PASSAGES"
+  ],
+  "properties": {
+    "PASSAGES": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "번호",
+          "전체_내용",
+          "배경_지식",
+          "소재",
+          "주제",
+          "요지",
+          "제목",
+          "한_문장_요약",
+          "주제문_번호",
+          "지문",
+          "어휘",
+          "출제포인트"
+        ],
+        "properties": {
+          "번호": {
+            "type": "string",
+            "minLength": 1
+          },
+          "전체_내용": {
+            "type": "string",
+            "minLength": 1
+          },
+          "배경_지식": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "제목",
+                "내용"
+              ],
+              "properties": {
+                "제목": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "내용": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "소재": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "주제": {
+            "type": "string",
+            "minLength": 1
+          },
+          "요지": {
+            "type": "string",
+            "minLength": 1
+          },
+          "제목": {
+            "type": "string",
+            "minLength": 1
+          },
+          "한_문장_요약": {
+            "type": "string",
+            "minLength": 1
+          },
+          "주제문_번호": {
+            "type": "string",
+            "pattern": "^(?:없음|\\([1-9]\\d*\\))$"
+          },
+          "지문": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "번호",
+                "영어",
+                "한글발음",
+                "한국어"
+              ],
+              "properties": {
+                "번호": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "영어": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "한글발음": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "한국어": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 1
+          },
+          "어휘": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "단어",
+                "뜻",
+                "동의어",
+                "반의어",
+                "반의어_뜻"
+              ],
+              "properties": {
+                "단어": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "뜻": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "동의어": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "반의어": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "반의어_뜻": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 5,
+            "maxItems": 10
+          },
+          "출제포인트": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "핵심 내용 재활용",
+              "어휘 포인트",
+              "빈칸 포인트",
+              "문장 삽입 포인트",
+              "글의 순서 포인트",
+              "서술형 포인트",
+              "함축 의미 포인트"
+            ],
+            "properties": {
+              "핵심 내용 재활용": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "요지",
+                  "주제",
+                  "제목",
+                  "영어_요약문",
+                  "A",
+                  "B",
+                  "정답_가능_표현",
+                  "풀이_전략"
+                ],
+                "properties": {
+                  "요지": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "주제": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "제목": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "영어_요약문": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "A": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "B": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "정답_가능_표현": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "A",
+                      "B"
+                    ],
+                    "properties": {
+                      "A": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": true
+                      },
+                      "B": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": true
+                      }
+                    }
+                  },
+                  "풀이_전략": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "어휘 포인트": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "별점",
+                    "문장번호",
+                    "표현",
+                    "왜_벗어나는가"
+                  ],
+                  "properties": {
+                    "별점": {
+                      "type": "string",
+                      "enum": [
+                        "★★★",
+                        "★★☆",
+                        "★☆☆"
+                      ]
+                    },
+                    "문장번호": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\([1-9]\\d*(?:~[1-9]\\d*)?\\)$"
+                    },
+                    "표현": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "왜_벗어나는가": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "maxItems": 5
+              },
+              "빈칸 포인트": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "별점",
+                    "문장번호",
+                    "핵심구절",
+                    "출제이유"
+                  ],
+                  "properties": {
+                    "별점": {
+                      "type": "string",
+                      "enum": [
+                        "★★★",
+                        "★★☆"
+                      ]
+                    },
+                    "문장번호": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\([1-9]\\d*(?:~[1-9]\\d*)?\\)$"
+                    },
+                    "핵심구절": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "출제이유": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "maxItems": 3
+              },
+              "문장 삽입 포인트": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "별점",
+                    "문장번호",
+                    "삽입후보문장",
+                    "출제이유"
+                  ],
+                  "properties": {
+                    "별점": {
+                      "type": "string",
+                      "enum": [
+                        "★★★",
+                        "★★☆",
+                        "★☆☆"
+                      ]
+                    },
+                    "문장번호": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\([1-9]\\d*(?:~[1-9]\\d*)?\\)$"
+                    },
+                    "삽입후보문장": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "출제이유": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "글의 순서 포인트": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "BOX",
+                  "A",
+                  "B",
+                  "C",
+                  "정답"
+                ],
+                "properties": {
+                  "BOX": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "문장번호",
+                      "기능"
+                    ],
+                    "properties": {
+                      "문장번호": {
+                        "type": "string"
+                      },
+                      "기능": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "A": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "문장번호",
+                      "기능"
+                    ],
+                    "properties": {
+                      "문장번호": {
+                        "type": "string"
+                      },
+                      "기능": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "B": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "문장번호",
+                      "기능"
+                    ],
+                    "properties": {
+                      "문장번호": {
+                        "type": "string"
+                      },
+                      "기능": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "C": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "문장번호",
+                      "기능"
+                    ],
+                    "properties": {
+                      "문장번호": {
+                        "type": "string"
+                      },
+                      "기능": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "정답": {
+                    "type": "string",
+                    "enum": [
+                      "",
+                      "A-B-C"
+                    ]
+                  }
+                }
+              },
+              "서술형 포인트": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "별점",
+                    "문장번호",
+                    "영어원문",
+                    "문법포인트설명"
+                  ],
+                  "properties": {
+                    "별점": {
+                      "type": "string",
+                      "enum": [
+                        "★★★",
+                        "★★☆"
+                      ]
+                    },
+                    "문장번호": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\([1-9]\\d*(?:~[1-9]\\d*)?\\)$"
+                    },
+                    "영어원문": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "문법포인트설명": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "함축 의미 포인트": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "별점",
+                    "문장번호",
+                    "핵심표현",
+                    "함축의미",
+                    "왜_중요한가"
+                  ],
+                  "properties": {
+                    "별점": {
+                      "type": "string",
+                      "enum": [
+                        "★★★",
+                        "★★☆",
+                        "★☆☆"
+                      ]
+                    },
+                    "문장번호": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\([1-9]\\d*(?:~[1-9]\\d*)?\\)$"
+                    },
+                    "핵심표현": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "함축의미": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "왜_중요한가": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "논리_시각화": {
+            "$ref": "#/$defs/logic_visualization"
+          }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "logic_visualization": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "박사원 V2 논리_시각화 1.0.0",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "diagram_type",
+        "selection_reason",
+        "nodes",
+        "edges",
+        "analogies",
+        "rendering"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "diagram_type": {
+          "type": "string",
+          "enum": [
+            "CAUSAL_FLOW",
+            "CONTRAST",
+            "ANALOGY",
+            "PROCESS",
+            "PROBLEM_SOLUTION",
+            "CLAIM_EVIDENCE",
+            "GENERAL_TO_SPECIFIC",
+            "MIXED"
+          ]
+        },
+        "selection_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/logic_visualization/$defs/node"
+          },
+          "minItems": 3,
+          "maxItems": 5
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/logic_visualization/$defs/edge"
+          },
+          "minItems": 2,
+          "maxItems": 8
+        },
+        "analogies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/logic_visualization/$defs/analogy"
+          },
+          "minItems": 0,
+          "maxItems": 3
+        },
+        "rendering": {
+          "$ref": "#/$defs/logic_visualization/$defs/rendering"
+        }
+      },
+      "$defs": {
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sentence_no",
+            "quote"
+          ],
+          "properties": {
+            "sentence_no": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "quote": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
+        },
+        "node": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "sentence_numbers",
+            "role",
+            "label",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^N[1-9][0-9]*$"
+            },
+            "sentence_numbers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "role": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/logic_visualization/$defs/evidence"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "edge": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "from",
+            "to",
+            "relation",
+            "label",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^E[1-9][0-9]*$"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^N[1-9][0-9]*$",
+              "description": "논리 관계가 출발하는 node ID. reading_order에서 뒤에 있는 node도 지정할 수 있습니다."
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^N[1-9][0-9]*$",
+              "description": "논리 관계가 향하는 node ID. reading_order와 무관하게 의미 방향을 기록합니다."
+            },
+            "relation": {
+              "type": "string",
+              "enum": [
+                "CAUSE",
+                "CONTRAST",
+                "ANALOGY",
+                "SEQUENCE",
+                "PROBLEM_SOLUTION",
+                "EVIDENCE",
+                "EXAMPLE",
+                "ELABORATION"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/logic_visualization/$defs/evidence"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "analogy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "node_id",
+            "vehicle",
+            "target",
+            "core_property",
+            "limit",
+            "mappings",
+            "evidence"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^A[1-9][0-9]*$"
+            },
+            "node_id": {
+              "type": "string",
+              "pattern": "^N[1-9][0-9]*$"
+            },
+            "vehicle": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "core_property": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "limit": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mappings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "vehicle_property",
+                  "target_property",
+                  "evidence"
+                ],
+                "properties": {
+                  "vehicle_property": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "target_property": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "evidence": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/logic_visualization/$defs/evidence"
+                    },
+                    "minItems": 1
+                  }
+                }
+              },
+              "minItems": 1,
+              "maxItems": 3
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/logic_visualization/$defs/evidence"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "rendering": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "layout",
+            "reading_order",
+            "groups",
+            "target",
+            "show_title"
+          ],
+          "properties": {
+            "layout": {
+              "type": "string",
+              "enum": [
+                "FLOW",
+                "CONTRAST_COLUMNS",
+                "ANALOGY_MAP",
+                "BRANCH"
+              ]
+            },
+            "reading_order": {
+              "type": "array",
+              "description": "노드의 화면 배치와 읽기 순서이며 Edge의 논리 방향을 제한하지 않습니다.",
+              "items": {
+                "type": "string",
+                "pattern": "^N[1-9][0-9]*$"
+              },
+              "minItems": 3,
+              "maxItems": 5,
+              "uniqueItems": true
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "label",
+                  "node_ids"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^G[1-9][0-9]*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  },
+                  "node_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^N[1-9][0-9]*$"
+                    },
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "uniqueItems": true
+                  }
+                }
+              },
+              "minItems": 0,
+              "maxItems": 5
+            },
+            "target": {
+              "const": "A4_HALF_PAGE"
+            },
+            "show_title": {
+              "const": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

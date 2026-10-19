@@ -328,6 +328,35 @@
     margin-top: 16px;
   }
 
+  .pronunciation-options {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .pronunciation-options legend { margin-bottom: 10px; }
+
+  .pronunciation-choice {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border: 1px solid rgba(24, 71, 72, 0.12);
+    border-radius: 14px;
+    background: #faf8f4;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .pronunciation-choice:has(input:checked) {
+    border-color: #1f6b61;
+    background: #eaf3ef;
+  }
+
+  .pronunciation-choice input { accent-color: #1f6b61; }
+
   .inline-actions {
     display: grid;
     grid-template-columns: 1fr;
@@ -771,6 +800,12 @@
 
     <div class="left-card">
       <label class="input-label">작업 실행</label>
+      <fieldset class="pronunciation-options">
+        <legend class="input-label">HWPX 발음 표시</legend>
+        <label class="pronunciation-choice"><input type="radio" name="pronunciation" value="excluded" checked> 발음 미포함</label>
+        <label class="pronunciation-choice"><input type="radio" name="pronunciation" value="included"> 발음 포함</label>
+        <div class="hint">발음 포함은 모든 문장의 한글발음 값이 필요합니다. 통합 JSON은 어느 쪽이든 동일합니다.</div>
+      </fieldset>
       <div class="left-action-stack">
         <button id="bundle-btn" class="btn-primary" type="button" disabled>ZIP 다운로드</button>
         <div class="inline-actions">
@@ -1066,7 +1101,8 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          mergedPayload: buildMergedPayload()
+          mergedPayload: buildMergedPayload(),
+          pronunciation: document.querySelector('input[name="pronunciation"]:checked').value
         })
       });
 
