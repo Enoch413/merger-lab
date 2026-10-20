@@ -552,15 +552,16 @@ def _branch_layout(logic, reserve_backward=False):
 def _column_layout(logic, reserve_backward=False):
     order = logic["rendering"]["reading_order"]
     boxes = {}
-    node_height = 150
+    node_height = 190
     rows = math.ceil(len(order) / 2)
     top = 180 if reserve_backward else 35
     gap = (CANVAS_SIZE[1] - top - 35 - rows * node_height) / max(1, rows - 1)
     for index, node_id in enumerate(order):
         row, col = divmod(index, 2)
         y = int(top + row * (node_height + gap))
-        x1 = 70 if col == 0 else 930
-        boxes[node_id] = (x1, y, x1 + 800, y + node_height)
+        # Leave room for a wrapped relation caption between the two columns.
+        x1 = 70 if col == 0 else 1080
+        boxes[node_id] = (x1, y, x1 + 650, y + node_height)
     return boxes
 
 
@@ -594,6 +595,8 @@ def _route_edge(source_box, target_box, side_route=False, backward_lane=None, ba
         return [start, (start[0], middle_y), (end[0], middle_y), end]
     start = (source_box[2], source_center[1])
     end = (target_box[0], target_center[1])
+    if abs(start[1] - end[1]) < 4:
+        return [start, end]
     middle_x = (start[0] + end[0]) / 2
     return [start, (middle_x, start[1]), (middle_x, end[1]), end]
 
@@ -661,6 +664,9 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
         else:
             center = _label_center(points, side_route=side_route)
             max_width = 410 if side_route else 580
+            if layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"}:
+                source, target = boxes[edge["from"]], boxes[edge["to"]]
+                max_width = target[0] - source[2] - 40 if source[1] == target[1] else 460
         _draw_edge_label(draw, center, edge, max_width=max_width)
 
     for index, node_id in enumerate(order):
