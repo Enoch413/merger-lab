@@ -134,5 +134,72 @@ class ParallelRelationTests(unittest.TestCase):
             visualizer.validate_logic_visualization(passage)
 
 
+class BranchRoutingTests(unittest.TestCase):
+    def test_split_and_merge_routes_clear_nodes_and_other_captions(self):
+        rectangle = ImageDraw.ImageDraw.rounded_rectangle
+        polyline = visualizer._draw_polyline
+        for count in (4, 5):
+            with self.subTest(nodes=count), tempfile.TemporaryDirectory() as directory:
+                payload = json.loads((ROOT / "tests/fixtures/microwave_APPROVED_MASTER_ANALYSIS.json")
+                                     .read_text(encoding="utf-8-sig"))
+                passage = payload["PASSAGES"][0]
+                logic = passage["논리_시각화"]
+                logic["nodes"] = logic["nodes"][:count]
+                logic["rendering"].update(layout="BRANCH", groups=[],
+                                           reading_order=[node["id"] for node in logic["nodes"]])
+                pairs = ([("N1", "N2"), ("N1", "N3"), ("N2", "N4"), ("N3", "N4")]
+                         if count == 4 else
+                         [("N1", "N2"), ("N2", "N3"), ("N2", "N4"), ("N3", "N5"), ("N4", "N5")])
+                template = logic["edges"][0]
+                logic["edges"] = [dict(copy.deepcopy(template), id=f"E{index}",
+                                       **{"from": source, "to": target}, relation="EXAMPLE",
+                                       label="문제의 구체적인 사례와 대응 방향")
+                                  for index, (source, target) in enumerate(pairs, 1)]
+                original = copy.deepcopy(passage)
+                paths, nodes, labels, events = [], [], [], []
+
+                def record_rectangle(draw, box, *args, **kwargs):
+                    fill = kwargs.get("fill")
+                    if fill == visualizer.COLORS["label_fill"]:
+                        labels.append(box)
+                        events.append("caption")
+                    elif fill in (visualizer.COLORS["node_fill"], visualizer.COLORS["node_fill_alt"]):
+                        nodes.append(box)
+                    return rectangle(draw, box, *args, **kwargs)
+
+                def record_polyline(draw, points, *args, **kwargs):
+                    paths.append(points)
+                    events.append("line")
+                    return polyline(draw, points, *args, **kwargs)
+
+                def crosses(start, end, box):
+                    if start[0] == end[0]:
+                        return (box[0] < start[0] < box[2]
+                                and max(min(start[1], end[1]), box[1]) < min(max(start[1], end[1]), box[3]))
+                    self.assertEqual(start[1], end[1])
+                    return (box[1] < start[1] < box[3]
+                            and max(min(start[0], end[0]), box[0]) < min(max(start[0], end[0]), box[2]))
+
+                with patch.object(ImageDraw.ImageDraw, "rounded_rectangle", record_rectangle), \
+                        patch.object(visualizer, "_draw_polyline", record_polyline):
+                    visualizer.render_logic_visualization(passage, Path(directory) / "branch.png")
+                self.assertEqual(passage, original)
+                self.assertEqual(len(paths), len(pairs))
+                self.assertEqual(len(labels), len(pairs))
+                for points in paths:
+                    for start, end in zip(points, points[1:]):
+                        for node in nodes:
+                            self.assertFalse(crosses(start, end, node), (points, node))
+                for index, label in enumerate(labels):
+                    for other in nodes + labels[:index]:
+                        self.assertFalse(overlaps(label, other), (label, other))
+                    for path_index, points in enumerate(paths):
+                        if path_index != index:
+                            for start, end in zip(points, points[1:]):
+                                self.assertFalse(crosses(start, end, label), (points, label))
+                self.assertLess(max(i for i, event in enumerate(events) if event == "line"),
+                                min(i for i, event in enumerate(events) if event == "caption"))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -550,6 +550,25 @@ def _branch_layout(logic, reserve_backward=False):
         order[-1],
     )
     branch_index, merge_index = order.index(branch), order.index(merge)
+    arms = order[branch_index + 1:merge_index]
+    diamond_nodes = {branch, merge, *arms}
+    local_pairs = {frozenset((edge["from"], edge["to"])) for edge in logic["edges"]
+                   if edge["from"] in diamond_nodes and edge["to"] in diamond_nodes}
+    diamond_pairs = {frozenset(pair) for arm in arms for pair in ((branch, arm), (arm, merge))}
+    if len(arms) == 2 and local_pairs == diamond_pairs and not reserve_backward:
+        # Parallel examples share a row so their connections never pass behind each other.
+        rows = [[node_id] for node_id in order[:branch_index + 1]]
+        rows += [arms] + [[node_id] for node_id in order[merge_index:]]
+        heights = [180 if len(row) == 2 else 128 for row in rows]
+        gap = (CANVAS_SIZE[1] - 44 - sum(heights)) / (len(rows) - 1)
+        boxes = {}
+        y = 22
+        for row, height in zip(rows, heights):
+            for column, node_id in enumerate(row):
+                left, right = (285, 1515) if len(row) == 1 else ((70, 720) if column == 0 else (1080, 1730))
+                boxes[node_id] = (left, int(y), right, int(y) + height)
+            y += height + gap
+        return boxes, branch, merge
     count = len(order)
     node_height = 128
     top, bottom = 22, CANVAS_SIZE[1] - 22
@@ -662,6 +681,8 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
     edge_groups = {}
     for edge in logic["edges"]:
         edge_groups.setdefault((edge["from"], edge["to"]), []).append(edge)
+    split_branch = bool(branch_info and len({box[1] for box in boxes.values()}) < len(boxes))
+    edge_labels = []
 
     for edges in edge_groups.values():
         edge = edges[0]
@@ -684,12 +705,17 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
         else:
             center = _label_center(points, side_route=side_route)
             max_width = 410 if side_route else 580
-            if layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"}:
+            if split_branch:
+                max_width = 440
+            elif layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"}:
                 source, target = boxes[edge["from"]], boxes[edge["to"]]
                 max_width = target[0] - source[2] - 40 if source[1] == target[1] else 460
             elif len(edges) > 1 and not side_route:
                 source, target = boxes[edge["from"]], boxes[edge["to"]]
                 max_width = min(source[2] - source[0], target[2] - target[0]) - 52
+        edge_labels.append((center, edges, max_width))
+
+    for center, edges, max_width in edge_labels:
         _draw_edge_label(draw, center, edges, max_width=max_width)
 
     for index, node_id in enumerate(order):
