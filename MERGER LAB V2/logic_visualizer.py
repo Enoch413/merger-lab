@@ -213,14 +213,14 @@ def _validate_graph_shape(logic, node_ids, location: str):
     order = logic["rendering"]["reading_order"]
     layout = logic["rendering"]["layout"]
     expected_pairs = {frozenset(pair) for pair in zip(order, order[1:])}
-    actual_pairs = [frozenset((edge["from"], edge["to"])) for edge in edges]
+    actual_pairs = {frozenset((edge["from"], edge["to"])) for edge in edges}
     if layout == "FLOW":
         if any(len(connected) > 2 for connected in neighbors.values()):
             _fail(f"{location}.rendering.layout", "FLOW인데 실제 그래프가 분기형입니다.")
-        if len(actual_pairs) != len(expected_pairs) or set(actual_pairs) != expected_pairs:
+        if actual_pairs != expected_pairs:
             _fail(f"{location}.rendering.layout", "FLOW의 Edge가 reading_order의 연속 흐름과 일치하지 않습니다.")
     elif layout == "BRANCH":
-        if len(actual_pairs) == len(expected_pairs) and set(actual_pairs) == expected_pairs:
+        if actual_pairs == expected_pairs:
             _fail(f"{location}.rendering.layout", "BRANCH인데 실제 그래프에 분기 Edge가 없습니다.")
 
 
@@ -485,14 +485,15 @@ def _edge_caption(edge):
     return f"{relation} · {edge['label']}"
 
 
-def _draw_edge_label(draw, center, edge, max_width=560):
-    font = _font(FONT_BOLD, 23)
-    caption = _edge_caption(edge)
-    lines = _wrap(draw, caption, font, max_width - 32, max_lines=2)
-    if len(lines) > 2:
+def _draw_edge_label(draw, center, edges, max_width=560):
+    multiple = len(edges) > 1
+    font = _font(FONT_BOLD, 20 if multiple else 23)
+    lines = [line for edge in edges
+             for line in _wrap(draw, _edge_caption(edge), font, max_width - 32, max_lines=2)]
+    if len(lines) > 2 and not multiple:
         font = _font(FONT_BOLD, 20)
-        lines = _wrap(draw, caption, font, max_width - 32, max_lines=3)
-    line_height = 31
+        lines = _wrap(draw, _edge_caption(edges[0]), font, max_width - 32, max_lines=3)
+    line_height = 28 if multiple else 31
     width = min(max_width, max(_text_width(draw, line, font) for line in lines) + 32)
     height = len(lines) * line_height + 18
     x1, y1 = center[0] - width / 2, center[1] - height / 2
@@ -508,11 +509,26 @@ def _flow_layout(logic, reserve_backward=False):
     node_height = 135 if count <= 4 else 128
     top, bottom = 25, CANVAS_SIZE[1] - 28
     gap = (bottom - top - count * node_height) / max(1, count - 1)
+    gaps = [gap] * (count - 1)
+    pair_counts = {}
+    for edge in logic["edges"]:
+        pair = frozenset((edge["from"], edge["to"]))
+        pair_counts[pair] = pair_counts.get(pair, 0) + 1
+    if any(value > 1 for value in pair_counts.values()):
+        # Shared captions need extra height; keep every caption between its nodes.
+        gaps = [
+            (28 * pair_counts[frozenset(pair)] if pair_counts[frozenset(pair)] > 1 else 31) + 30
+            for pair in zip(order, order[1:])
+        ]
+        spare = (bottom - top - count * node_height - sum(gaps)) / (count - 1)
+        gaps = [height + spare for height in gaps]
     boxes = {}
     left = 430 if reserve_backward else 230
+    y = top
     for index, node_id in enumerate(order):
-        y = int(top + index * (node_height + gap))
-        boxes[node_id] = (left, y, 1570, y + node_height)
+        boxes[node_id] = (left, int(y), 1570, int(y) + node_height)
+        if index < len(gaps):
+            y += node_height + gaps[index]
     return boxes
 
 
@@ -643,8 +659,12 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
 
     nodes_by_id = {node["id"]: node for node in logic["nodes"]}
     backward_lanes = {edge["id"]: index for index, edge in enumerate(backward_edges)}
-
+    edge_groups = {}
     for edge in logic["edges"]:
+        edge_groups.setdefault((edge["from"], edge["to"]), []).append(edge)
+
+    for edges in edge_groups.values():
+        edge = edges[0]
         backward_lane = backward_lanes.get(edge["id"])
         backward_axis = "top" if layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"} else "left"
         side_route = bool(
@@ -667,7 +687,10 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
             if layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"}:
                 source, target = boxes[edge["from"]], boxes[edge["to"]]
                 max_width = target[0] - source[2] - 40 if source[1] == target[1] else 460
-        _draw_edge_label(draw, center, edge, max_width=max_width)
+            elif len(edges) > 1 and not side_route:
+                source, target = boxes[edge["from"]], boxes[edge["to"]]
+                max_width = min(source[2] - source[0], target[2] - target[0]) - 52
+        _draw_edge_label(draw, center, edges, max_width=max_width)
 
     for index, node_id in enumerate(order):
         _draw_node(draw, boxes[node_id], nodes_by_id[node_id], alternate=index % 2 == 1)
