@@ -6,6 +6,7 @@ from __future__ import annotations
 import math
 import re
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -336,6 +337,7 @@ def validate_logic_visualization(passage: dict, passage_index=0) -> dict:
     return logic
 
 
+@lru_cache(maxsize=32)
 def _font(path: Path, size: int):
     if path.is_file():
         return ImageFont.truetype(str(path), size=size)
@@ -389,6 +391,25 @@ def _sentences_badge(numbers):
     return "문장 " + "·".join(str(number) for number in numbers)
 
 
+def _node_text(draw, node, width):
+    font = _font(FONT_REGULAR, 32)
+    lines = _wrap(draw, node["label"], font, width - 52)
+    if len(lines) > 2:
+        font = _font(FONT_REGULAR, 27)
+        lines = _wrap(draw, node["label"], font, width - 52)
+    step = 41 if font.size >= 30 else 36
+    height = 72 + (len(lines) - 1) * step + draw.textbbox((0, 0), lines[-1], font=font)[3] + 12
+    return font, lines, step, height
+
+
+def _draw_bounded_text(draw, xy, text, font, fill, box, location):
+    bounds = draw.textbbox(xy, text, font=font)
+    if not (box[0] <= bounds[0] <= bounds[2] <= box[2]
+            and box[1] <= bounds[1] <= bounds[3] <= box[3]):
+        _fail(location, f"텍스트가 표시 영역을 초과합니다: {text}")
+    draw.text(xy, text, font=font, fill=fill)
+
+
 def _draw_node(draw, box, node, alternate=False):
     x1, y1, x2, y2 = box
     fill = COLORS["node_fill_alt"] if alternate else COLORS["node_fill"]
@@ -396,23 +417,25 @@ def _draw_node(draw, box, node, alternate=False):
 
     badge_font = _font(FONT_BOLD, 24)
     role_font = _font(FONT_BOLD, 27)
-    label_font = _font(FONT_REGULAR, 32)
     badge = _sentences_badge(node["sentence_numbers"])
     badge_width = _text_width(draw, badge, badge_font) + 34
     badge_box = (x1 + 24, y1 + 18, x1 + 24 + badge_width, y1 + 58)
     draw.rounded_rectangle(badge_box, radius=18, fill=COLORS["badge_fill"])
-    draw.text((badge_box[0] + 17, badge_box[1] + 5), badge, font=badge_font, fill=COLORS["badge_ink"])
-    draw.text((badge_box[2] + 24, y1 + 21), node["role"], font=role_font, fill=COLORS["role"])
+    _draw_bounded_text(draw, (badge_box[0] + 17, badge_box[1] + 5), badge,
+                       badge_font, COLORS["badge_ink"], badge_box, node["id"])
+    role_x = badge_box[2] + 24
+    for size in range(27, 17, -1):
+        role_font = _font(FONT_BOLD, size)
+        if _text_width(draw, node["role"], role_font) <= x2 - role_x - 24:
+            break
+    _draw_bounded_text(draw, (role_x, y1 + 21), node["role"], role_font,
+                       COLORS["role"], box, node["id"])
 
-    max_width = x2 - x1 - 52
-    lines = _wrap(draw, node["label"], label_font, max_width, max_lines=2)
-    if len(lines) > 2:
-        label_font = _font(FONT_REGULAR, 27)
-        lines = _wrap(draw, node["label"], label_font, max_width, max_lines=3)
-    line_height = 41 if getattr(label_font, "size", 32) >= 30 else 36
+    label_font, lines, line_height, _ = _node_text(draw, node, x2 - x1)
     start_y = y1 + 72
-    for line_index, line in enumerate(lines[:3]):
-        draw.text((x1 + 26, start_y + line_index * line_height), line, font=label_font, fill=COLORS["ink"])
+    for line_index, line in enumerate(lines):
+        _draw_bounded_text(draw, (x1 + 26, start_y + line_index * line_height), line,
+                           label_font, COLORS["ink"], box, node["id"])
 
 
 def _line_color(relation):
@@ -485,7 +508,7 @@ def _edge_caption(edge):
     return f"{relation} · {edge['label']}"
 
 
-def _draw_edge_label(draw, center, edges, max_width=560):
+def _label_text(draw, edges, max_width):
     multiple = len(edges) > 1
     font = _font(FONT_BOLD, 20 if multiple else 23)
     lines = [line for edge in edges
@@ -496,39 +519,37 @@ def _draw_edge_label(draw, center, edges, max_width=560):
     line_height = 28 if multiple else 31
     width = min(max_width, max(_text_width(draw, line, font) for line in lines) + 32)
     height = len(lines) * line_height + 18
+    return font, lines, line_height, width, height
+
+
+def _draw_edge_label(draw, center, edges, max_width=560):
+    font, lines, line_height, width, height = _label_text(draw, edges, max_width)
     x1, y1 = center[0] - width / 2, center[1] - height / 2
     box = (x1, y1, x1 + width, y1 + height)
     draw.rounded_rectangle(box, radius=13, fill=COLORS["label_fill"], outline=COLORS["label_border"], width=2)
     for index, line in enumerate(lines):
-        draw.text((x1 + 16, y1 + 7 + index * line_height), line, font=font, fill=COLORS["ink"])
+        _draw_bounded_text(draw, (x1 + 16, y1 + 7 + index * line_height), line,
+                           font, COLORS["ink"], box, ", ".join(edge["id"] for edge in edges))
 
 
-def _flow_layout(logic, reserve_backward=False):
+def _flow_layout(draw, logic, reserve_backward=False):
     order = logic["rendering"]["reading_order"]
-    count = len(order)
-    node_height = 135 if count <= 4 else 128
-    top, bottom = 25, CANVAS_SIZE[1] - 28
-    gap = (bottom - top - count * node_height) / max(1, count - 1)
-    gaps = [gap] * (count - 1)
-    pair_counts = {}
-    for edge in logic["edges"]:
-        pair = frozenset((edge["from"], edge["to"]))
-        pair_counts[pair] = pair_counts.get(pair, 0) + 1
-    if any(value > 1 for value in pair_counts.values()):
-        # Shared captions need extra height; keep every caption between its nodes.
-        gaps = [
-            (28 * pair_counts[frozenset(pair)] if pair_counts[frozenset(pair)] > 1 else 31) + 30
-            for pair in zip(order, order[1:])
-        ]
-        spare = (bottom - top - count * node_height - sum(gaps)) / (count - 1)
-        gaps = [height + spare for height in gaps]
-    boxes = {}
-    left = 430 if reserve_backward else 230
-    y = top
+    nodes = {node['id']: node for node in logic['nodes']}
+    left, right = (430 if reserve_backward else 230), 1570
+    heights = [_node_text(draw, nodes[n], right - left)[3] for n in order]
+    pairs = {}
+    for edge in logic['edges']:
+        pairs.setdefault(frozenset((edge['from'], edge['to'])), []).append(edge)
+    gaps = [_label_text(draw, pairs[frozenset(pair)], 580)[4] + 28
+            for pair in zip(order, order[1:])]
+    spare = (1028 - sum(heights) - sum(gaps)) / (len(order) - 1)
+    if spare < 0:
+        _fail('논리_시각화', 'FLOW의 본문과 관계 설명이 A4 반쪽 영역을 초과합니다.')
+    boxes, y = {}, 16
     for index, node_id in enumerate(order):
-        boxes[node_id] = (left, int(y), 1570, int(y) + node_height)
+        boxes[node_id] = (left, y, right, y + heights[index])
         if index < len(gaps):
-            y += node_height + gaps[index]
+            y += heights[index] + gaps[index] + spare
     return boxes
 
 
@@ -604,50 +625,187 @@ def _box_center(box):
     return ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
 
 
-def _route_edge(source_box, target_box, side_route=False, backward_lane=None, backward_axis="left"):
-    if backward_lane is not None:
-        if backward_axis == "top":
-            y = 25 + backward_lane * 18
-            start = ((source_box[0] + source_box[2]) / 2, source_box[1])
-            end = ((target_box[0] + target_box[2]) / 2, target_box[1])
-            return [start, (start[0], y), (end[0], y), end]
-        x = 35 + backward_lane * 22
-        start = (source_box[0], (source_box[1] + source_box[3]) / 2)
-        end = (target_box[0], (target_box[1] + target_box[3]) / 2)
-        return [start, (x, start[1]), (x, end[1]), end]
-    if side_route:
-        x = CANVAS_SIZE[0] - 62
-        start = (source_box[2], (source_box[1] + source_box[3]) / 2)
-        end = (target_box[2], (target_box[1] + target_box[3]) / 2)
-        return [start, (x, start[1]), (x, end[1]), end]
-    source_center, target_center = _box_center(source_box), _box_center(target_box)
-    if target_box[1] >= source_box[3]:
-        start = (source_center[0], source_box[3])
-        end = (target_center[0], target_box[1])
-        if abs(start[0] - end[0]) < 4:
-            return [start, end]
-        middle_y = (start[1] + end[1]) / 2
-        return [start, (start[0], middle_y), (end[0], middle_y), end]
-    start = (source_box[2], source_center[1])
-    end = (target_box[0], target_center[1])
-    if abs(start[1] - end[1]) < 4:
-        return [start, end]
-    middle_x = (start[0] + end[0]) / 2
-    return [start, (middle_x, start[1]), (middle_x, end[1]), end]
+def _overlaps(a, b, margin=0):
+    return (a[0] < b[2] + margin and b[0] < a[2] + margin
+            and a[1] < b[3] + margin and b[1] < a[3] + margin)
 
 
-def _label_center(points, side_route=False, backward_axis=None):
-    if backward_axis == "left":
-        vertical_start, vertical_end = points[1], points[2]
-        return (225, (vertical_start[1] + vertical_end[1]) / 2)
-    if backward_axis == "top":
-        horizontal_start, horizontal_end = points[1], points[2]
-        return ((horizontal_start[0] + horizontal_end[0]) / 2, 105)
-    if side_route:
-        vertical_start, vertical_end = points[1], points[2]
-        return (vertical_start[0] - 205, (vertical_start[1] + vertical_end[1]) / 2)
-    longest = max(zip(points, points[1:]), key=lambda pair: math.hypot(pair[1][0] - pair[0][0], pair[1][1] - pair[0][1]))
-    return ((longest[0][0] + longest[1][0]) / 2, (longest[0][1] + longest[1][1]) / 2)
+def _crosses(a, b, box):
+    if a[0] == b[0]:
+        return (box[0] < a[0] < box[2]
+                and max(min(a[1], b[1]), box[1]) < min(max(a[1], b[1]), box[3]))
+    return (box[1] < a[1] < box[3]
+            and max(min(a[0], b[0]), box[0]) < min(max(a[0], b[0]), box[2]))
+
+
+def _path_crosses(points, box):
+    return any(_crosses(a, b, box) for a, b in zip(points, points[1:]))
+
+
+def _shared_segment(first, second):
+    for a, b in zip(first, first[1:]):
+        for c, d in zip(second, second[1:]):
+            if a[0] == b[0] == c[0] == d[0]:
+                if max(min(a[1], b[1]), min(c[1], d[1])) < min(max(a[1], b[1]), max(c[1], d[1])):
+                    return True
+            elif a[1] == b[1] == c[1] == d[1]:
+                if max(min(a[0], b[0]), min(c[0], d[0])) < min(max(a[0], b[0]), max(c[0], d[0])):
+                    return True
+    return False
+
+
+def _fit_boxes(draw, logic, boxes):
+    nodes = {node['id']: node for node in logic['nodes']}
+    rows = {}
+    for node_id, box in boxes.items():
+        rows.setdefault(box[1], []).append(node_id)
+    heights = [max(max(boxes[n][3] - boxes[n][1],
+                       _node_text(draw, nodes[n], boxes[n][2] - boxes[n][0])[3]) for n in row)
+               for row in rows.values()]
+    if all(height == boxes[row[0]][3] - boxes[row[0]][1]
+           for row, height in zip(rows.values(), heights)):
+        return boxes
+    gap = (1016 - sum(heights)) / (len(rows) - 1)
+    if gap < 36:
+        return None
+    result, y = {}, 22
+    for row, height in zip(rows.values(), heights):
+        for node_id in row:
+            old = boxes[node_id]
+            result[node_id] = (old[0], y, old[2], y + height)
+        y += height + gap
+    return result
+
+
+def _route_candidates(draw, boxes, edges, group_index):
+    source, target = boxes[edges[0]['from']], boxes[edges[0]['to']]
+    # A different port per edge prevents separate relationships becoming one apparent line.
+    offset = (group_index - 3) * 12
+
+    def ports(box):
+        x, y = _box_center(box)
+        return [((x + offset, box[3]), (0, 1)), ((x + offset, box[1]), (0, -1)),
+                ((box[2], y + offset), (1, 0)), ((box[0], y + offset), (-1, 0))]
+
+    xs = sorted({35, 225, 1575, 1765,
+                 *(b[0] - 24 for b in boxes.values()), *(b[2] + 24 for b in boxes.values())})
+    ys = sorted({22, 1038, *(b[1] - 24 for b in boxes.values()),
+                 *(b[3] + 24 for b in boxes.values())})
+    measures = [(w, *_label_text(draw, edges, w)[3:]) for w in (580, 440, 320)]
+    candidates, seen = [], set()
+    for (start, sv) in ports(source):
+        for (end, tv) in ports(target):
+            paths = [[start, (start[0], end[1]), end], [start, (end[0], start[1]), end]]
+            paths += [[start, (x, start[1]), (x, end[1]), end] for x in xs if 18 <= x <= 1782]
+            paths += [[start, (start[0], y), (end[0], y), end] for y in ys if 18 <= y <= 1042]
+            for raw in paths:
+                points = []
+                for point in raw:
+                    if not points or point != points[-1]:
+                        points.append(point)
+                if len(points) < 2:
+                    continue
+                if ((points[1][0] - start[0]) * sv[0] + (points[1][1] - start[1]) * sv[1] <= 0
+                        or (points[-2][0] - end[0]) * tv[0] + (points[-2][1] - end[1]) * tv[1] < 22):
+                    continue
+                key = tuple(points)
+                if key in seen or any(_path_crosses(points, b) for b in boxes.values()):
+                    continue
+                seen.add(key)
+                length = sum(abs(a[0] - b[0]) + abs(a[1] - b[1]) for a, b in zip(points, points[1:]))
+                for a, b in zip(points, points[1:]):
+                    vertical = a[0] == b[0]
+                    low, high = sorted((a[1], b[1]) if vertical else (a[0], b[0]))
+                    for max_width, width, height in measures:
+                        half = height / 2 if vertical else width / 2
+                        end_axis = end[1] if vertical else end[0]
+                        lo = low + half + (20 if b == end and end_axis == low else 8)
+                        hi = high - half - (20 if b == end and end_axis == high else 8)
+                        if lo > hi:
+                            continue
+                        positions = [(lo + hi) / 2, lo, hi]
+                        positions += [lo + (hi - lo) * f / 8 for f in range(1, 8)]
+                        for pos in positions:
+                            cx = min(1780 - width / 2, max(20 + width / 2, a[0])) if vertical else pos
+                            cy = pos if vertical else a[1]
+                            box = (cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2)
+                            if (box[1] < 16 or box[3] > 1044
+                                    or _overlaps(box, _arrow_bounds(points))
+                                    or any(_overlaps(box, n, 8) for n in boxes.values())):
+                                continue
+                            score = length + 80 * (len(points) - 2) + height * 2
+                            score += abs(pos - (low + high) / 2) * .15
+                            candidates.append((score, points, (cx, cy), max_width, box))
+    candidates.sort(key=lambda c: c[0])
+    # shortcut: bounded search for the schema's eight edges; raise clearly if no safe plan fits.
+    return candidates[:600]
+
+
+def _arrow_bounds(points):
+    x, y = points[-1]
+    return (x - 18, y - 18, x + 18, y + 18)
+
+
+def _compatible(first, second):
+    return (not _overlaps(first[4], second[4], 10)
+            and not _path_crosses(first[1], second[4])
+            and not _path_crosses(second[1], first[4])
+            and not _overlaps(first[4], _arrow_bounds(second[1]))
+            and not _overlaps(second[4], _arrow_bounds(first[1]))
+            and not _shared_segment(first[1], second[1]))
+
+
+def _plan_edges(draw, boxes, groups):
+    choices = [_route_candidates(draw, boxes, edges, i) for i, edges in enumerate(groups)]
+    indices = sorted(range(len(groups)), key=lambda i: len(choices[i]))
+    selected, attempts = {}, 0
+
+    def search(depth):
+        nonlocal attempts
+        if depth == len(indices):
+            return True
+        index = indices[depth]
+        for candidate in choices[index]:
+            attempts += 1
+            if attempts > 60000:
+                return False
+            if all(_compatible(candidate, other) for other in selected.values()):
+                selected[index] = candidate
+                if search(depth + 1):
+                    return True
+                del selected[index]
+        return False
+
+    if search(0):
+        return [selected[i] for i in range(len(groups))]
+    return None
+
+
+def _validate_scene(boxes, plans, groups):
+    for box in list(boxes.values()) + [plan[4] for plan in plans]:
+        if not (0 <= box[0] < box[2] <= CANVAS_SIZE[0] and 0 <= box[1] < box[3] <= CANVAS_SIZE[1]):
+            _fail('논리_시각화', '도식의 표시 영역이 캔버스를 초과합니다.')
+    for i, plan in enumerate(plans):
+        if any(_path_crosses(plan[1], b) or _overlaps(plan[4], b) for b in boxes.values()):
+            _fail('논리_시각화', f"{groups[i][0]['id']} 연결선 또는 설명이 노드와 겹칩니다.")
+        for other in plans[:i]:
+            if not _compatible(plan, other):
+                _fail('논리_시각화', f"{groups[i][0]['id']} 연결선 또는 설명이 다른 관계와 겹칩니다.")
+
+
+def _draw_crossing_gaps(draw, points, previous):
+    # A small underpass gap distinguishes a crossing from a shared connection.
+    for a, b in zip(points, points[1:]):
+        for path in previous:
+            for c, d in zip(path, path[1:]):
+                if (a[0] == b[0]) == (c[0] == d[0]):
+                    continue
+                x, y = (a[0], c[1]) if a[0] == b[0] else (c[0], a[1])
+                if (min(a[0], b[0]) <= x <= max(a[0], b[0])
+                        and min(a[1], b[1]) <= y <= max(a[1], b[1])
+                        and min(c[0], d[0]) <= x <= max(c[0], d[0])
+                        and min(c[1], d[1]) <= y <= max(c[1], d[1])):
+                    draw.ellipse((x - 8, y - 8, x + 8, y + 8), fill=COLORS['background'])
 
 
 def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
@@ -667,56 +825,38 @@ def render_logic_visualization(passage: dict, output_path: Path | str) -> Path:
     ]
     reserve_backward = bool(backward_edges)
     if layout == "FLOW":
-        boxes = _flow_layout(logic, reserve_backward=reserve_backward)
-        branch_info = None
+        boxes = _flow_layout(draw, logic, reserve_backward=reserve_backward)
     elif layout == "BRANCH":
-        boxes, branch, merge = _branch_layout(logic, reserve_backward=reserve_backward)
-        branch_info = (branch, merge)
+        boxes, _, _ = _branch_layout(logic, reserve_backward=reserve_backward)
     else:
         boxes = _column_layout(logic, reserve_backward=reserve_backward)
-        branch_info = None
 
     nodes_by_id = {node["id"]: node for node in logic["nodes"]}
-    backward_lanes = {edge["id"]: index for index, edge in enumerate(backward_edges)}
     edge_groups = {}
     for edge in logic["edges"]:
         edge_groups.setdefault((edge["from"], edge["to"]), []).append(edge)
-    split_branch = bool(branch_info and len({box[1] for box in boxes.values()}) < len(boxes))
-    edge_labels = []
-
-    for edges in edge_groups.values():
+    groups = list(edge_groups.values())
+    boxes = _fit_boxes(draw, logic, boxes)
+    plans = _plan_edges(draw, boxes, groups) if boxes else None
+    if plans is None and layout == "BRANCH":
+        # Complex forks need space on both sides, while reading_order stays unchanged.
+        step = 888 / (len(order) - 1)
+        boxes = {node_id: (480, 22 + i * step, 1320, 150 + i * step)
+                 for i, node_id in enumerate(order)}
+        boxes = _fit_boxes(draw, logic, boxes)
+        plans = _plan_edges(draw, boxes, groups) if boxes else None
+    if plans is None:
+        _fail("논리_시각화", "상자와 관계 설명을 겹치지 않게 배치할 수 없습니다. "
+              + "관계: " + ", ".join(edge["id"] for edge in logic["edges"]))
+    _validate_scene(boxes, plans, groups)
+    previous = []
+    for edges, plan in zip(groups, plans):
         edge = edges[0]
-        backward_lane = backward_lanes.get(edge["id"])
-        backward_axis = "top" if layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"} else "left"
-        side_route = bool(
-            backward_lane is None and branch_info
-            and edge["from"] == branch_info[0] and edge["to"] == branch_info[1]
-        )
-        points = _route_edge(
-            boxes[edge["from"]], boxes[edge["to"]],
-            side_route=side_route,
-            backward_lane=backward_lane,
-            backward_axis=backward_axis,
-        )
-        _draw_polyline(draw, points, edge["relation"], possible=_edge_is_possible(edge))
-        if backward_lane is not None:
-            center = _label_center(points, backward_axis=backward_axis)
-            max_width = 340 if backward_axis == "left" else 520
-        else:
-            center = _label_center(points, side_route=side_route)
-            max_width = 410 if side_route else 580
-            if split_branch:
-                max_width = 440
-            elif layout in {"CONTRAST_COLUMNS", "ANALOGY_MAP"}:
-                source, target = boxes[edge["from"]], boxes[edge["to"]]
-                max_width = target[0] - source[2] - 40 if source[1] == target[1] else 460
-            elif len(edges) > 1 and not side_route:
-                source, target = boxes[edge["from"]], boxes[edge["to"]]
-                max_width = min(source[2] - source[0], target[2] - target[0]) - 52
-        edge_labels.append((center, edges, max_width))
-
-    for center, edges, max_width in edge_labels:
-        _draw_edge_label(draw, center, edges, max_width=max_width)
+        _draw_crossing_gaps(draw, plan[1], previous)
+        _draw_polyline(draw, plan[1], edge["relation"], possible=_edge_is_possible(edge))
+        previous.append(plan[1])
+    for edges, plan in zip(groups, plans):
+        _draw_edge_label(draw, plan[2], edges, max_width=plan[3])
 
     for index, node_id in enumerate(order):
         _draw_node(draw, boxes[node_id], nodes_by_id[node_id], alternate=index % 2 == 1)
